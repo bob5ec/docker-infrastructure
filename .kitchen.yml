@@ -5,7 +5,9 @@ driver:
   instance_name: test
   use_sudo: false
   privileged: true
-  remove_images: true
+
+# remove all cached images
+#  remove_images: true
 
 provisioner:
   # use an ansible playbook to provision our server
@@ -19,7 +21,8 @@ verifier:
   name: inspec
   
 platforms:
-  - name: ubuntu-14.04
+#  - name: ubuntu-14.04
+  - name: debian-8.9
 
 suites:
   # suites found at /test/integration/$test-name

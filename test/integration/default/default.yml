@@ -1,12 +1,33 @@
 ---
-# host to test against
-- hosts: test-kitchen
+- name: Install and manage libvirtd
+  hosts: test-kitchen
   remote_user: root
+  become: True
+
+  environment: '{{ inventory__environment | d({})
+                   | combine(inventory__group_environment | d({}))
+                   | combine(inventory__host_environment  | d({})) }}'
 
   roles:
-  - {role: jdauphant.nginx,
-     nginx_http_params: ["sendfile on", "access_log /var/log/nginx/access.log"]
-                          }
-    # name of role to test
-    #- role: ansible-$role
-#    - role: debops.nginx
+
+    - role: debops.libvirt
+      tags: [ 'role::libvirt' ]
+
+    - role: debops.apt_preferences
+      tags: [ 'role::apt_preferences' ]
+      apt_preferences__dependent_list:
+        - '{{ libvirtd__apt_preferences__dependent_list }}'
+
+#    - role: debops.ferm
+#      tags: [ 'role::ferm' ]
+#      ferm__forward: '{{ libvirtd__ferm__forward|d() | bool }}'
+#      ferm__forward_accept: '{{ libvirtd__ferm__forward|d() | bool }}'
+#      ferm__dependent_rules:
+#        - '{{ libvirtd__ferm__dependent_rules }}'
+#        - '{{ libvirtd_qemu__ferm__dependent_rules }}'
+
+    - role: debops.libvirtd
+      tags: [ 'role::libvirtd' ]
+
+    - role: debops.libvirtd_qemu
+      tags: [ 'role::libvirtd_qemu', 'role::libvirtd' ]

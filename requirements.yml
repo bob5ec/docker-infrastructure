@@ -4,5 +4,8 @@
 #
 ---
 # - src: noqcks.apt-repository
-# - src: debops.nginx
- - src: jdauphant.nginx
+ - src: debops.libvirt
+ - src: debops.libvirtd
+ - src: debops.apt_preferences
+ - src: debops.ferm
+ - src: debops.libvirtd_qemu
