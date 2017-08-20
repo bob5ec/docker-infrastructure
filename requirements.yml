@@ -4,8 +4,8 @@
 #
 ---
 # - src: noqcks.apt-repository
- - src: debops.libvirt
- - src: debops.libvirtd
+# - src: debops.libvirt
+# - src: debops.libvirtd
  - src: debops.apt_preferences
- - src: debops.ferm
- - src: debops.libvirtd_qemu
+# - src: debops.ferm
+# - src: debops.libvirtd_qemu

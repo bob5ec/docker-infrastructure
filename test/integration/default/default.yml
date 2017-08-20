@@ -1,33 +1,22 @@
 ---
-- name: Install and manage libvirtd
-  hosts: test-kitchen
-  remote_user: root
-  become: True
 
-  environment: '{{ inventory__environment | d({})
-                   | combine(inventory__group_environment | d({}))
-                   | combine(inventory__host_environment  | d({})) }}'
+#- name: apply common configuration to all nodes
+#  hosts: all
+#  remote_user: root
+#
+#  roles:
+#    - common
+
+- name: configure and deploy libvirt
+  hosts: all
+  remote_user: root
 
   roles:
-
-    - role: debops.libvirt
-      tags: [ 'role::libvirt' ]
-
-    - role: debops.apt_preferences
-      tags: [ 'role::apt_preferences' ]
-      apt_preferences__dependent_list:
-        - '{{ libvirtd__apt_preferences__dependent_list }}'
-
-#    - role: debops.ferm
-#      tags: [ 'role::ferm' ]
-#      ferm__forward: '{{ libvirtd__ferm__forward|d() | bool }}'
-#      ferm__forward_accept: '{{ libvirtd__ferm__forward|d() | bool }}'
-#      ferm__dependent_rules:
-#        - '{{ libvirtd__ferm__dependent_rules }}'
-#        - '{{ libvirtd_qemu__ferm__dependent_rules }}'
-
-    - role: debops.libvirtd
-      tags: [ 'role::libvirtd' ]
-
-    - role: debops.libvirtd_qemu
-      tags: [ 'role::libvirtd_qemu', 'role::libvirtd' ]
+    - hypervisor
+#
+#- name: deploy MySQL and configure the databases
+#  hosts: vm
+#  remote_user: root
+#
+#  roles:
+#    - vm

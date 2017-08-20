@@ -2,10 +2,10 @@
 driver:
   # using docker to test
   name: docker
-  instance_name: test
   use_sudo: false
   privileged: true
 
+#  instance_name: test
 # remove all cached images
 #  remove_images: true
 
