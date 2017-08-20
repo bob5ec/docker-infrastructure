@@ -13,6 +13,13 @@
 
   roles:
     - hypervisor
+
+- name: create VMs
+  hosts: all
+  remote_user: root
+
+  roles:
+    - vms
 #
 #- name: deploy MySQL and configure the databases
 #  hosts: vm
