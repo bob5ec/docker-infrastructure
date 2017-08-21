@@ -22,27 +22,28 @@
 #        bridge_maxwait 0
 #        bridge_fd 0
 
-#dresden-weekly.network-interfaces
+# [WARNING]: It is unnecessary to use '{{' in loops, leave variables in loop expressions bare.
+#ERROR: [DEPRECATED]: include + with_items is a removed deprecated feature (in /etc/ansible/roles/dresden-weekly.network-interfaces/handlers/main.yml).  Please update your playbooks.
 
-- name: create VLANs and network interfaces
-  hosts: all
-  remote_user: root
+#- name: create VLANs and network interfaces
+#  hosts: all
+#  remote_user: root
 
-  roles:
-    - role: dresden-weekly.network-interfaces
-      network_manage_devices: yes
-
-      network_interfaces:
-      - device: vlan123
-        description: sample vlan interface using eth0 and tagged for VLAN 123.
-        method: static
-        address: 1.2.3.4
-        netmask: 24
-        broadcast: 1.2.3.255
-        vlan:
-          raw-device: eth0
-        up:
-        - route add default gw 1.2.3.254
+#  roles:
+#    - role: dresden-weekly.network-interfaces
+#      network_manage_devices: yes
+#
+#      network_interfaces:
+#      - device: vlan123
+#        description: sample vlan interface using eth0 and tagged for VLAN 123.
+#        method: static
+#        address: 1.2.3.4
+#        netmask: 24
+#        broadcast: 1.2.3.255
+#        vlan:
+#          raw-device: eth0
+#        up:
+#        - route add default gw 1.2.3.254
 
 - name: create VMs
   hosts: all
