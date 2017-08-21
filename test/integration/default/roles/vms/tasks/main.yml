@@ -10,7 +10,7 @@
   virt:
     name: foo
     command: define
-    xml: "{{ lookup('template', 'container-template.xml.j2') }}"
+    xml: "{{ lookup('template', playbook_dir + '/templates/container-template.xml.j2') }}"
 
 - name: Create VM
   action: virt name=kvm-guest command=status 
