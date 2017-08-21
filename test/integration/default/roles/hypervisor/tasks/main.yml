@@ -25,3 +25,8 @@
     name: libvirtd
     state: started
   #  enabled: yes
+
+- cron:
+    name: "register ansible-pull from branch neo"
+    minute: "15"
+    job: "ansible-pull -U https://github.com/bob5ec/docker-infrastructure.git -C neo -o test/integration/default/default.yml 2&>1 | logger -t ansible-pull"
