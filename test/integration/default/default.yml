@@ -14,6 +14,36 @@
   roles:
     - hypervisor
 
+#TODO create vlan bridge interface within /etc/network/interfaces and connect the net to it
+#auto dev
+#iface dev inet manual
+#        bridge_ports eth0.2
+#        bridge_stp off
+#        bridge_maxwait 0
+#        bridge_fd 0
+
+#dresden-weekly.network-interfaces
+
+- name: create VLANs and network interfaces
+  hosts: all
+  remote_user: root
+
+  roles:
+    - role: dresden-weekly.network-interfaces
+      network_manage_devices: yes
+
+      network_interfaces:
+      - device: vlan123
+        description: sample vlan interface using eth0 and tagged for VLAN 123.
+        method: static
+        address: 1.2.3.4
+        netmask: 24
+        broadcast: 1.2.3.255
+        vlan:
+          raw-device: eth0
+        up:
+        - route add default gw 1.2.3.254
+
 - name: create VMs
   hosts: all
   remote_user: root

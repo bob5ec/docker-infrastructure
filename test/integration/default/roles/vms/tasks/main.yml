@@ -122,8 +122,8 @@
 </domain>
 "
 
-- name: Create VM
-  action: virt name=kvm-guest command=status 
+#- name: Create VM
+#  action: virt name=kvm-guest command=status 
 #   register: result 
 #   until: result.status.find("shutdown") != -1 
 #   retries: 30 
