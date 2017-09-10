@@ -1,0 +1,6 @@
+---
+# tasks file for basics
+- name: get networking scripts
+  apt:
+    name: netbase
+    state: present

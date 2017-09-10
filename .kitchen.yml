@@ -24,6 +24,9 @@ platforms:
 #  - name: ubuntu-14.04
   - name: debian-8.9
 
+# kitchen-ansible is not installing ansible correctly on stable https://github.com/neillturner/kitchen-ansible/issues/257
+#  - name: debian-stable
+
 suites:
   # suites found at /test/integration/$test-name
   - name: default
