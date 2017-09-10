@@ -2,5 +2,6 @@
 # tasks file for basics
 - name: get networking scripts
   apt:
-    name: netbase
+#    name: netbase
+    name: ifupdown
     state: present
