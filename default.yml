@@ -36,21 +36,25 @@
       network_manage_devices: yes
 
       network_interfaces:
-      - device: vlan123
-        description: sample vlan interface using eth0 and tagged for VLAN 123.
-        method: static
-        address: 10.1.1.2
-        netmask: 24
-        broadcast: 10.1.1.255
+      - device: vlanDev
+        description: dev VLAN
+        method: manual
+#        address: 10.1.1.2
+#        netmask: 24
+#        broadcast: 10.1.1.255
+        vlan:
+          raw-device: eth0
+      - device: vlanQa
+        method: manual
+        vlan:
+          raw-device: eth0
+      - device: vlanProd
+        method: manual
         vlan:
           raw-device: eth0
 
-- name: create VMs
-  hosts: all
-  remote_user: root
 
-  roles:
-    - vms
+
 #
 #- name: deploy MySQL and configure the databases
 #  hosts: vm

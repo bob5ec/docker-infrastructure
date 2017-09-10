@@ -1,0 +1,9 @@
+---
+import_playbook: default.yml
+
+- name: create VMs on physical machine
+  hosts: all
+  remote_user: root
+
+  roles:
+    - vms
