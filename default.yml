@@ -42,67 +42,43 @@
       network_manage_devices: yes
 
       network_interfaces:
-#      - device: vlan{{ item }}
-      - device:
-        name: vlan{{ item }}
-        description: "{{ item }} VLAN"
+#TODO test
+        #VLAN interfaces using eth0 as trunk
+      - device: vlan3
         method: manual
-#        address: 10.1.1.2
-#        netmask: 24
-#        broadcast: 10.1.1.255
         vlan:
           raw-device: eth0
-        with_items: "{{ envs }}"
-#        with_items:
-#          - dev
-#          - qa
-#          - prod
-      - device:
-        name: "{{ item }}"
-        description: "{{ item }} Network to attach VMs"
+      - device: vlan4
+        method: manual
+        vlan:
+          raw-device: eth0
+      - device: vlan5
+        method: manual
+        vlan:
+          raw-device: eth0
+#TODO test
+        #networks to attach VMs
+      - device: dev
         method: manual
         bridge:
-          ports: vlan{{ item }}
+          ports: vlan3
           stp: off
           maxwait: 0
           fd: 0
-        with_items: "{{ envs }}"
-#        with_items:
-#          - dev
-#          - qa
-#          - prod
-
-
-#      - device: vlanqa
-#        method: manual
-#        vlan:
-#          raw-device: eth0
-#      - device: vlanprod
-#        method: manual
-#        vlan:
-#          raw-device: eth0
-#      - device: {{ item }}
-#        description: dev Network to attach VMs
-#        method: manual
-#        bridge:
-#          ports: vlanDev
-#          stp: off
-#          maxwait: 0
-#          fd: 0
-#      - device: qa
-#        method: manual
-#        bridge:
-#          ports: vlanQa
-#          stp: off
-#          maxwait: 0
-#          fd: 0
-#      - device: prod
-#        method: manual
-#        bridge:
-#          ports: vlanProd
-#          stp: off
-#          maxwait: 0
-#          fd: 0
+      - device: qa
+        method: manual
+        bridge:
+          ports: vlan4
+          stp: off
+          maxwait: 0
+          fd: 0
+      - device: prod
+        method: manual
+        bridge:
+          ports: vlan5
+          stp: off
+          maxwait: 0
+          fd: 0
 
 
 
