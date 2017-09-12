@@ -6,6 +6,23 @@
     name: python-libvirt
     state: present
 
+#create machine from install media
+#virt-install \
+#--name debian8 \
+#--ram 1024 \
+#--disk path=./debian8.qcow2,size=8 \
+#--vcpus 1 \
+#--os-type linux \
+#--os-variant generic \
+#--network bridge=virbr0 \
+#--graphics none \
+#--console pty,target_type=serial \
+#--location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
+#--extra-args 'console=ttyS0,115200n8 serial'
+
+# --> A) after install finished run ansible directly on the new machine
+#     B) give parameter to kernel boot to separate different cases within the all mighty install script that fully sets up the machine
+
 - name: define vm
   virt:
     name: foo
@@ -121,6 +138,7 @@
   </devices>
 </domain>
 "
+
 
 #- name: Create VM
 #  action: virt name=kvm-guest command=status 
