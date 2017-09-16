@@ -20,8 +20,10 @@
 #--location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
 #--extra-args 'console=ttyS0,115200n8 serial'
 
-# --> A) after install finished run ansible directly on the new machine
-#     B) give parameter to kernel boot to separate different cases within the all mighty install script that fully sets up the machine
+#TODO
+# run vm-preseed install.
+# After install finished run ansible-pull directly on the new machine, 
+# set ansible pull branch and preseed branch differently: PROD = master, qa=qa, dev=dev
 
 - name: define vm
   virt:
