@@ -12,7 +12,7 @@
 # set ansible pull branch and preseed branch differently: PROD = master, qa=qa, dev=dev
 
 - name: create VM from install media
-  command: "virt-install \
+  command: creates="/etc/libvirt/qemu/dev.xml" "virt-install \
 --name {{ envs[0]|quote }} \
 --ram 1024 \
 --disk path=./dev.qcow2,size=8 \
@@ -24,7 +24,6 @@
 --console pty,target_type=serial \
 --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
 --extra-args 'console=ttyS0,115200n8 serial'"
-    creates: /etc/libvirt/qemu/dev.xml
 
 
 #- name: get libvirt for python
