@@ -4,6 +4,11 @@ import_playbook: default.yml
 - name: create VMs on physical machine
   hosts: all
   remote_user: root
+  vars:
+    envs:
+      - dev
+      - qa
+      - prod
 
   roles:
     - vms
