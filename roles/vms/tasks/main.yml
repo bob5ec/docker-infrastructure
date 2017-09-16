@@ -33,7 +33,6 @@
     xml: "
 <domain type='kvm'>
   <name>{{ envs[0] }}</name>
-  <uuid>96ca0930-a7c1-4286-b02f-e5799fcffeac</uuid>
   <memory unit='KiB'>1048576</memory>
   <currentMemory unit='KiB'>1048576</currentMemory>
   <vcpu placement='static'>1</vcpu>

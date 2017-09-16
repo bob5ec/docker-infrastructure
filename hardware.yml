@@ -1,5 +1,5 @@
 ---
-import_playbook: default.yml
+#import_playbook: default.yml
 
 - name: create VMs on physical machine
   hosts: all
