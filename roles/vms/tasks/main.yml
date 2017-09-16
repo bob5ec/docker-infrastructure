@@ -24,7 +24,7 @@
 --console pty,target_type=serial \
 --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
 --extra-args 'console=ttyS0,115200n8 serial'"
-  creates: /etc/libvirt/qemu/dev.xml
+    creates: /etc/libvirt/qemu/dev.xml
 
 
 #- name: get libvirt for python
