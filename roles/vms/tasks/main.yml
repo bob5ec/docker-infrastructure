@@ -13,7 +13,7 @@
 
 - name: create VM from install media
   #command: creates="/etc/libvirt/qemu/dev.xml" "virt-install \
-  command: creates="/etc/libvirt/qemu/dev.xml" |
+  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
     virt-install \
     --name {{ envs[0]|quote }} \
     --ram 1024 \
