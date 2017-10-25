@@ -3,30 +3,64 @@
 
 - name: get virt-install
   apt:
-    name: virtinst
+    name:
+      - virtinst
+      - xmlstarlet
+      - bzip2
     state: present
 
-#TODO
-# run vm-preseed install.
-# After install finished run ansible-pull directly on the new machine, 
-# set ansible pull branch and preseed branch differently: PROD = master, qa=qa, dev=dev
+#TODO adapt to container linux script
+#- name: create VM from install media
+#  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
+#    virt-install \
+#    --name {{ envs[0]|quote }} \
+#    --ram 1024 \
+#    --disk size=8 \
+#    --vcpus 1 \
+#    --os-type linux \
+#    --os-variant generic \
+#    --network bridge=virbr0 \
+#    --graphics none \
+#    --console pty,target_type=serial \
+#    --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
+#    --extra-args 'console=ttyS0,115200n8 serial'
 
-#TODO use with for envs
-- name: create VM from install media
-  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
-    virt-install \
-    --name {{ envs[0]|quote }} \
-    --ram 1024 \
-    --disk size=8 \
-    --vcpus 1 \
-    --os-type linux \
-    --os-variant generic \
-    --network bridge=virbr0 \
-    --graphics none \
-    --console pty,target_type=serial \
-    --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
-    --extra-args 'console=ttyS0,115200n8 serial'
+#TODO get container linux
+# install it via qemu
+# use ignition to register a deploy container that contains docker-compose
 
+
+#Container Linux deploy script
+#wget https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
+#bunzip2 coreos_production_qemu_image.bz2
+#qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
+
+#create xml file
+#domain=/var/lib/libvirt/images/container-linux/container-linux1-domain.xml
+
+#virt-install --connect qemu:///system \
+#             --import \
+#             --name container-linux1 \
+#             --ram 1024 --vcpus 1 \
+#             --os-type=linux \
+#             --os-variant=virtio26 \
+#             --disk path=/var/lib/libvirt/images/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio \
+#             --vnc --noautoconsole \
+#             --print-xml > $domain
+
+# set ignition file in xml
+
+#ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
+#
+#xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "${domain}"
+#xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "${domain}"
+#xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "${domain}"
+#xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "${domain}"
+#xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "${domain}"
+#xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[2]" -t attr -n "value" -v "name=opt/com.coreos/config,file=${ignition_file}" "${domain}"
+#
+#virsh define $domain
+#virsh start container-linux1
 
 #- name: get libvirt for python
 #  apt:
@@ -65,3 +99,23 @@
 #   until: result.status.find("shutdown") != -1 
 #   retries: 30 
 #   delay: 5 
+
+
+# ALTERNATIVE the debian native way
+# run vm-preseed install.
+# After install finished run ansible-pull directly on the new machine, 
+# set ansible pull branch and preseed branch differently: PROD = master, qa=qa, dev=dev
+#- name: create VM from install media
+#  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
+#    virt-install \
+#    --name {{ envs[0]|quote }} \
+#    --ram 1024 \
+#    --disk size=8 \
+#    --vcpus 1 \
+#    --os-type linux \
+#    --os-variant generic \
+#    --network bridge=virbr0 \
+#    --graphics none \
+#    --console pty,target_type=serial \
+#    --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
+#    --extra-args 'console=ttyS0,115200n8 serial'

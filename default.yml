@@ -80,12 +80,3 @@
           maxwait: 0
           fd: 0
 
-
-
-#
-#- name: deploy MySQL and configure the databases
-#  hosts: vm
-#  remote_user: root
-#
-#  roles:
-#    - vm

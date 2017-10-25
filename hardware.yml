@@ -1,7 +1,8 @@
 ---
 #import_playbook: default.yml
+- include: default.yml
 
-- name: create VMs on physical machine
+- name: provision VMs with CoreOS container linux
   hosts: all
   remote_user: root
   vars:
