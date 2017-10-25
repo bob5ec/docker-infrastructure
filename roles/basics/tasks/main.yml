@@ -5,3 +5,9 @@
 #    name: netbase
     name: ifupdown
     state: present
+
+- name: Set authorized key from git user
+  authorized_key:
+    user: root
+    state: present
+    key: https://github.com/bob5ec.keys

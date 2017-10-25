@@ -6,7 +6,7 @@ This project provides a default infrastructure to host a dev, qa, prod docker en
 
 ### Install
 The installation of the full stack on a hardware host is started in three steps:
-1. Download a Debian 9 install medium and start it
+1. Download a [Debian 9 install medium](https://www.debian.org/distrib/netinst) and start it
 2. Hit escape key
 3. Type install `auto=true priority=critical preseed/url=https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/hardware.preseed`
 
