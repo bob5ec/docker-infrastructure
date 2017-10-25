@@ -148,7 +148,6 @@ d-i clock-setup/ntp boolean true
 #d-i clock-setup/ntp-server string ntp.example.com
 
 ### Partitioning
-## Partitioning example
 # If the system has free space you can choose to only partition that space.
 # This is only honoured if partman-auto/method (below) is not set.
 #d-i partman-auto/init_automatically_partition select biggest_free
@@ -158,7 +157,7 @@ d-i clock-setup/ntp boolean true
 # name must be given in traditional, non-devfs format (so e.g. /dev/sda
 # and not e.g. /dev/discs/disc0/disc).
 # For example, to use the first SCSI/SATA hard disk:
-#d-i partman-auto/disk string /dev/sda
+d-i partman-auto/disk string /dev/sda
 # In addition, you'll need to specify the method to use.
 # The presently available methods are:
 # - regular: use the usual partition types for your architecture
@@ -222,57 +221,6 @@ d-i partman/confirm_nooverwrite boolean true
 
 # When disk encryption is enabled, skip wiping the partitions beforehand.
 #d-i partman-auto-crypto/erase_disks boolean false
-
-## Partitioning using RAID
-# The method should be set to "raid".
-#d-i partman-auto/method string raid
-# Specify the disks to be partitioned. They will all get the same layout,
-# so this will only work if the disks are the same size.
-#d-i partman-auto/disk string /dev/sda /dev/sdb
-
-# Next you need to specify the physical partitions that will be used. 
-#d-i partman-auto/expert_recipe string \
-#      multiraid ::                                         \
-#              1000 5000 4000 raid                          \
-#                      $primary{ } method{ raid }           \
-#              .                                            \
-#              64 512 300% raid                             \
-#                      method{ raid }                       \
-#              .                                            \
-#              500 10000 1000000000 raid                    \
-#                      method{ raid }                       \
-#              .
-
-# Last you need to specify how the previously defined partitions will be
-# used in the RAID setup. Remember to use the correct partition numbers
-# for logical partitions. RAID levels 0, 1, 5, 6 and 10 are supported;
-# devices are separated using "#".
-# Parameters are:
-# <raidtype> <devcount> <sparecount> <fstype> <mountpoint> \
-#          <devices> <sparedevices>
-
-#d-i partman-auto-raid/recipe string \
-#    1 2 0 ext3 /                    \
-#          /dev/sda1#/dev/sdb1       \
-#    .                               \
-#    1 2 0 swap -                    \
-#          /dev/sda5#/dev/sdb5       \
-#    .                               \
-#    0 2 0 ext3 /home                \
-#          /dev/sda6#/dev/sdb6       \
-#    .
-
-# For additional information see the file partman-auto-raid-recipe.txt
-# included in the 'debian-installer' package or available from D-I source
-# repository.
-
-# This makes partman automatically partition without confirmation.
-d-i partman-md/confirm boolean true
-d-i partman-partitioning/confirm_write_new_label boolean true
-d-i partman/choose_partition select finish
-d-i partman/confirm boolean true
-d-i partman/confirm_nooverwrite boolean true
-
 ## Controlling how partitions are mounted
 # The default is to mount by UUID, but you can also choose "traditional" to
 # use traditional device names, or "label" to try filesystem labels before
@@ -434,5 +382,8 @@ d-i finish-install/reboot_in_progress note
 # directly, or use the apt-install and in-target commands to easily install
 # packages and run commands in the target system.
 #d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
-d-i preseed/late_command string in-target wget -O - https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/deploy-ansible.sh | /bin/bash
+#d-i preseed/late_command string in-target wget -q -O - https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/deploy-ansible.sh | /bin/bash
 
+d-i preseed/late_command string \
+in-target wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/deploy-ansible.sh ; \
+in-target /bin/bash /tmp/deploy-ansible.sh
