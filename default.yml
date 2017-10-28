@@ -37,25 +37,35 @@
       - qa
       - prod
 
+    #nic: enp0s31f6
   roles:
     - role: dresden-weekly.network-interfaces
       network_manage_devices: yes
 
       network_interfaces:
 #TODO test
-        #VLAN interfaces using eth0 as trunk
+      - device: enp0s31f6
+        description: physical NIC
+        auto: true
+        family: inet
+        #method: dhcp
+        #VLAN interfaces using physical NIC as trunk
       - device: vlan3
         method: manual
         vlan:
-          raw-device: eth0
+          raw-device: enp0s31f6
       - device: vlan4
         method: manual
         vlan:
-          raw-device: eth0
+          raw-device: enp0s31f6
       - device: vlan5
         method: manual
+        method: static
+        address: 192.168.5.2
+        gateway: 192.168.5.1
+        netmask: 24
         vlan:
-          raw-device: eth0
+          raw-device: enp0s31f6
 #TODO test
         #networks to attach VMs
       - device: dev
