@@ -1,13 +1,27 @@
 ---
 # tasks file for vms
 
-- name: get virt-install
+- name: get virt-install tools
   apt:
     name:
       - virtinst
       - xmlstarlet
       - bzip2
     state: present
+
+#wget https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
+#bunzip2 coreos_production_qemu_image.bz2
+- name: Prepare Container Linux disk
+  unarchive:
+    src: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
+    dest: /var/lib/libvirt/images/coreos_production_qemu_image.img
+    remote_src: yes
+
+#qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
+
+- name: create qcow2 disk
+  command: creates="/var/lib/libvirt/images/container-linux1.qcow2" |
+    qemu-img create -f qcow2 -b /var/lib/libvirt/images/coreos_production_qemu_image.img /var/lib/libvirt/images/container-linux1.qcow2
 
 #TODO adapt to container linux script
 #- name: create VM from install media
@@ -31,9 +45,6 @@
 
 
 #Container Linux deploy script
-#wget https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
-#bunzip2 coreos_production_qemu_image.bz2
-#qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
 
 #create xml file
 #domain=/var/lib/libvirt/images/container-linux/container-linux1-domain.xml
