@@ -16,10 +16,9 @@
     url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
     dest: /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2
     mode: 0440
-
 - name: Extract Container Linux
   command: creates="/var/lib/libvirt/images/coreos_production_qemu_image.img" |
-    bunzip2 /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2
+    cat /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2 | bunzip2 /var/lib/libvirt/images/coreos_production_qemu_image.img
 
 #qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
 
@@ -27,24 +26,52 @@
   command: creates="/var/lib/libvirt/images/container-linux1.qcow2" |
     qemu-img create -f qcow2 -b /var/lib/libvirt/images/coreos_production_qemu_image.img /var/lib/libvirt/images/container-linux1.qcow2
 
-#TODO adapt to container linux script
-#- name: create VM from install media
+
+#old: domain=/var/lib/libvirt/images/container-linux/container-linux1-domain.xml
+#domain=/etc/libvirt/qemu/container-linux1.xml
+
+
+- name: create VM
+# this step creates a temp file as well...
+#  command: creates="/etc/libvirt/qemu/container-linux1.xml" |
+  command: creates="/tmp/container-linux1-domain.xml" |
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
-#    virt-install \
+    virt-install \
+    --connect qemu:///system \
+    --import \
+    --name container-linux1 \
 #    --name {{ envs[0]|quote }} \
-#    --ram 1024 \
-#    --disk size=8 \
-#    --vcpus 1 \
-#    --os-type linux \
-#    --os-variant generic \
+    --ram 1024 --vcpus 1 \
+    --os-type=linux \
+    --os-variant=virtio26 \
+    --disk path=/var/lib/libvirt/images/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio \
+    --vnc --noautoconsole \
+    --print-xml > /tmp/container-linux1-domain.xml
 #    --network bridge=virbr0 \
 #    --graphics none \
 #    --console pty,target_type=serial \
 #    --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
 #    --extra-args 'console=ttyS0,115200n8 serial'
 
-#TODO get container linux
-# install it via qemu
+
+- name: set ignition file in xml
+  command: creates="/tmp/container-linux1-domain-with-ignnition.xml" |
+#  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
+    bash -c \
+#ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
+    xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "/tmp/container-linux1-domain.xml" \
+    xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "/tmp/container-linux1-domain.xml" \
+    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "/tmp/container-linux1-domain.xml" \
+    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "/tmp/container-linux1-domain.xml" \
+    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "/tmp/container-linux1-domain.xml" \
+    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[2]" -t attr -n "value" -v "name=opt/com.coreos/config,file=/var/lib/libvirt/images/provision.ign" "/tmp/container-linux1-domain.xml"
+#TODO config verschieben
+#TODO ignition ausliefern
+
+#
+#virsh define $domain
+#virsh start container-linux1
+
 # use ignition to register a deploy container that contains docker-compose
 
 
