@@ -34,19 +34,19 @@
 - name: create VM
 # this step creates a temp file as well...
 #  command: creates="/etc/libvirt/qemu/container-linux1.xml" |
-  command: creates="/tmp/container-linux1-domain.xml" |
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
+  command: creates="/tmp/container-linux1-domain.xml" |
     virt-install \
     --connect qemu:///system \
     --import \
     --name container-linux1 \
-#    --name {{ envs[0]|quote }} \
     --ram 1024 --vcpus 1 \
     --os-type=linux \
     --os-variant=virtio26 \
     --disk path=/var/lib/libvirt/images/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio \
     --vnc --noautoconsole \
     --print-xml > /tmp/container-linux1-domain.xml
+#    --name {{ envs[0]|quote }} \
 #    --network bridge=virbr0 \
 #    --graphics none \
 #    --console pty,target_type=serial \
@@ -55,10 +55,10 @@
 
 
 - name: set ignition file in xml
-  command: creates="/tmp/container-linux1-domain-with-ignnition.xml" |
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
-    bash -c \
 #ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
+  command: creates="/tmp/container-linux1-domain-with-ignnition.xml" |
+    bash -c \
     xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "/tmp/container-linux1-domain.xml" \
     xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "/tmp/container-linux1-domain.xml" \
     xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "/tmp/container-linux1-domain.xml" \
