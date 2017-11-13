@@ -22,7 +22,7 @@
 
 #qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
 
-- name: create qcow2 disk
+- name: Create qcow2 disk
   shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
   args:
     chdir: /var/lib/libvirt/images/
