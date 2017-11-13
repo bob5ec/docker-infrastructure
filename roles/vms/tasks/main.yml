@@ -28,11 +28,6 @@
     chdir: /var/lib/libvirt/images/
     creates: container-linux1.qcow2
 
-#- name: create qcow2 disk
-#  command: creates="/var/lib/libvirt/images/container-linux1.qcow2" |
-#    qemu-img create -f qcow2 -b /var/lib/libvirt/images/coreos_production_qemu_image.img /var/lib/libvirt/images/container-linux1.qcow2
-
-
 #old: domain=/var/lib/libvirt/images/container-linux/container-linux1-domain.xml
 #domain=/etc/libvirt/qemu/container-linux1.xml
 
@@ -41,8 +36,7 @@
 # this step creates a temp file as well...
 #  command: creates="/etc/libvirt/qemu/container-linux1.xml" |
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
-  command: creates="/tmp/container-linux1-domain.xml" |
-    virt-install \
+  shell: virt-install \
     --connect qemu:///system \
     --import \
     --name container-linux1 \
@@ -52,6 +46,8 @@
     --disk path=/var/lib/libvirt/images/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio \
     --vnc --noautoconsole \
     --print-xml > /tmp/container-linux1-domain.xml
+  args:
+    creates: /tmp/container-linux1-domain.xml
 #    --name {{ envs[0]|quote }} \
 #    --network bridge=virbr0 \
 #    --graphics none \
@@ -63,14 +59,14 @@
 - name: set ignition file in xml
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
 #ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
-  command: creates="/tmp/container-linux1-domain-with-ignnition.xml" |
-    bash -c \
-    xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "/tmp/container-linux1-domain.xml" \
+  shell: xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "/tmp/container-linux1-domain.xml" \
     xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "/tmp/container-linux1-domain.xml" \
     xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "/tmp/container-linux1-domain.xml" \
     xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "/tmp/container-linux1-domain.xml" \
     xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "/tmp/container-linux1-domain.xml" \
     xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[2]" -t attr -n "value" -v "name=opt/com.coreos/config,file=/var/lib/libvirt/images/provision.ign" "/tmp/container-linux1-domain.xml"
+  args:
+    creates: /tmp/container-linux1-domain-with-ignnition.xml
 #TODO config verschieben
 #TODO ignition ausliefern
 
