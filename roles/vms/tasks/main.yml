@@ -80,6 +80,7 @@
     command: define
     xml: "{{lookup('file', '/var/lib/libvirt/images/container-linux1-domain.xml') }}"
 - name: run VM
+  virt:
     name: container-linux1
     state: running
 #virsh define $domain
