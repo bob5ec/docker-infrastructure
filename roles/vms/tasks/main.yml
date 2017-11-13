@@ -71,9 +71,10 @@
   args:
     chdir: /var/lib/libvirt/images/
     creates: /var/lib/libvirt/images/container-linux1-domain.xml
-#TODO config verschieben
-#provision.ign
-#TODO ignition ausliefern
+
+- copy:
+    src: "{{ role_path }}/files/provision.ign"
+    dest: /var/lib/libvirt/images/provision.ign
 
 - name: define VM
   virt:

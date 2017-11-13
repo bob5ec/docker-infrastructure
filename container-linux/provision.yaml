@@ -1,0 +1,5 @@
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDRrv5XeKyECmRaG0a2NoovFWJJgP91/Xrcei2m5QNKkzpAcj7W2wJfM1n4qRAqwKKLJXeIWuLc+uoRLBVl2WyfKf5sQnGEWdommyubRYXi9EWSRf08XPNGntNKJRBqVLvYfg8PWFuqmhzKhgA2mT+kXcKlPtHvq60banc8gZHuPH+r7VSSsgOaBYPNvtIm3Tzzrgy3omXrgtWVUbCuYkdg2Q6y+tPM5W5EeeviqESsc1+hjQu5U3Qp/1emC+7dkLuBfuwb1VeMWcmp4v4juPc4T+aUMZLQ+xXqE3JofJP1g9ncgPKsdU6BKTcDzafhs3QswIB79El1QGZJDiMUHQ7D
