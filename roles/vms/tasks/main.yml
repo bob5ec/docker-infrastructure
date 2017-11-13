@@ -43,7 +43,7 @@
     --ram 1024 --vcpus 1 \
     --os-type=linux \
     --os-variant=virtio26 \
-    --disk path=/var/lib/libvirt/images/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio \
+    --disk path=/var/lib/libvirt/images/container-linux1.qcow2,format=qcow2,bus=virtio \
     --vnc --noautoconsole \
     --print-xml > /tmp/container-linux1-domain.xml
   args:
