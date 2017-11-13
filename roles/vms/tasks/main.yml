@@ -45,6 +45,7 @@
     --os-variant=virtio26 \
     --disk path=container-linux1.qcow2,format=qcow2,bus=virtio \
     --vnc --noautoconsole \
+    --network bridge=dev \
     --print-xml > container-linux1-domain-pre.xml
   args:
     chdir: /var/lib/libvirt/images/
