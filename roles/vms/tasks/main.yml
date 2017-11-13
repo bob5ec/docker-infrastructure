@@ -60,12 +60,12 @@
 - name: set ignition file in xml
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
 #ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
-  shell: cp container-linux1-domain-pre.xml container-linux1-domain.xml \
-    xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "container-linux1-domain.xml" \
-    xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "container-linux1-domain.xml" \
-    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "container-linux1-domain.xml" \
-    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "container-linux1-domain.xml" \
-    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "container-linux1-domain.xml" \
+  shell: cp container-linux1-domain-pre.xml container-linux1-domain.xml; \
+    xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "container-linux1-domain.xml"; \
+    xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "container-linux1-domain.xml"; \
+    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "container-linux1-domain.xml"; \
+    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "container-linux1-domain.xml"; \
+    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "container-linux1-domain.xml"; \
     xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[2]" -t attr -n "value" -v "name=opt/com.coreos/config,file=/var/lib/libvirt/images/provision.ign" "container-linux1-domain.xml"
   args:
     chdir: /var/lib/libvirt/images/
