@@ -57,7 +57,7 @@
 #    --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
 #    --extra-args 'console=ttyS0,115200n8 serial'
 
-
+#TODO ignition is read only on first boot -> virsh undefine? or killing the disk?
 - name: set ignition file in xml
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
 #ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
