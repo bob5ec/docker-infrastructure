@@ -9,7 +9,7 @@ networkd:
     - name: static.network
       contents: |
         [Match]
-        Name=en*
+        Name=eth0
 
         [Network]
         Address=192.168.3.2/24
