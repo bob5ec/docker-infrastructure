@@ -1,8 +1,8 @@
 ---
 #TODO roling update to prevent downtime of running containers. Requires docker swarm or/and lock@etcd
 - name: Reset Container Linux
-  notify: shut down VM
-- name: shut down VM
+#  notify: shut down VM
+#- name: shut down VM
   virt:
     name: container-linux1
     state: shutdown
