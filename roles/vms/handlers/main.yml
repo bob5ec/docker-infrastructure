@@ -8,11 +8,14 @@
     state: shutdown
   notify: wait for VM to shut down
 - name: wait for VM to shut down
-  wait_for:
-    host: 192.168.3.2
-    port: 22
-    state: stopped
+  pause:
+    seconds: 5
   notify: Clean disk
+#- name: wait for VM to shut down
+#  wait_for:
+#    host: 192.168.3.2
+#    port: 22
+#    state: stopped
 - name: Clean disk
   file:
     state: absent
