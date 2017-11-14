@@ -72,7 +72,8 @@
     chdir: /var/lib/libvirt/images/
     creates: /var/lib/libvirt/images/container-linux1-domain.xml
 
-- copy:
+- name: Copy Ignition Config
+  copy:
     src: "{{ role_path }}/files/provision.ign"
     dest: /var/lib/libvirt/images/provision.ign
 
