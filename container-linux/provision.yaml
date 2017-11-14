@@ -14,3 +14,17 @@ networkd:
         [Network]
         Address=192.168.3.2/24
         Gateway=192.168.3.1
+systemd:
+  units:
+    - name: hello.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=A hello world unit!
+        Type=oneshot
+
+        [Service]
+        ExecStart=/usr/bin/echo "Hello, World!"
+
+        [Install]
+        WantedBy=multi-user.target
