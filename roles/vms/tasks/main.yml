@@ -19,14 +19,16 @@
 - name: Extract Container Linux
   command: creates="/var/lib/libvirt/images/coreos_production_qemu_image.img" |
     cat /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2 | bunzip2 /var/lib/libvirt/images/coreos_production_qemu_image.img
+#  notify:
+#    - Reset Container Linux
 
 #qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
 
-- name: Create qcow2 disk
-  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
-  args:
-    chdir: /var/lib/libvirt/images/
-    creates: container-linux1.qcow2
+#- name: Create qcow2 disk
+#  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
+#  args:
+#    chdir: /var/lib/libvirt/images/
+#    creates: container-linux1.qcow2
 
 #old: domain=/var/lib/libvirt/images/container-linux/container-linux1-domain.xml
 #domain=/etc/libvirt/qemu/container-linux1.xml
@@ -57,7 +59,6 @@
 #    --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
 #    --extra-args 'console=ttyS0,115200n8 serial'
 
-#TODO ignition is read only on first boot -> virsh undefine? or killing the disk?
 - name: set ignition file in xml
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
 #ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
@@ -76,6 +77,7 @@
   copy:
     src: "{{ role_path }}/files/provision.ign"
     dest: /var/lib/libvirt/images/provision.ign
+  notify: Reset Container Linux
 
 - name: define VM
   virt:

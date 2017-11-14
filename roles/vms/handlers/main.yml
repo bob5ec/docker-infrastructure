@@ -1,2 +1,22 @@
 ---
-# handlers file for vms
+#TODO roling update to prevent downtime of running containers. Requires docker swarm or/and lock@etcd
+- name: Reset Container Linux
+    block:
+     - name: shut down VM
+       virt:
+         name: container-linux1
+         state: shutdown
+     - name: wait for VM to shut down
+       wait_for:
+         host: 192.168.3.2
+         port: 22
+         state: stopped
+     - name: Clean disk
+       file:
+         state: absent
+         path: /var/lib/libvirt/images/container-linux1.qcow2
+     - name: Create qcow2 disk
+       shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
+       args:
+         chdir: /var/lib/libvirt/images/
+         creates: container-linux1.qcow2
