@@ -17,3 +17,35 @@ networkd:
         Address=192.168.3.2/24
         Gateway=192.168.3.1
         DNS=192.168.1.1
+
+systemd:
+  units:
+    - name: compose.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Docker Compose
+        After=docker.service
+        Requires=docker.service
+        
+        [Service]
+        TimeoutStartSec=0
+        ExecStartPre=-/usr/bin/docker kill busybox1
+        ExecStartPre=-/usr/bin/docker rm busybox1
+        ExecStartPre=/usr/bin/docker pull busybox
+        ExecStart=/usr/bin/docker run --name busybox1 busybox /bin/sh -c "trap 'exit 0' INT TERM; while true; do echo Hello World; sleep 1; done"
+        
+        [Install]
+        WantedBy=multi-user.target
+
+
+# TODO lock-down-the-internet.com
+#systemd:
+#  units:
+#    - name: docker.service
+#      enable: true
+#      dropins:
+#        - name: 20-http-proxy.conf
+#          contents: |
+#            [Service]
+#            Environment="HTTP_PROXY=http://proxy.example.com:8080"
