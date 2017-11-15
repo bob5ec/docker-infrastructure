@@ -6,11 +6,14 @@
   virt:
     name: container-linux1
     state: shutdown
-  notify: wait for VM to shut down
+  notify:
+    - wait for VM to shut down
+    - Clean disk
+    - Create qcow2 disk
 - name: wait for VM to shut down
   pause:
     seconds: 5
-  notify: Clean disk
+#TODO this notify does not trigger...
 #- name: wait for VM to shut down
 #  wait_for:
 #    host: 192.168.3.2
@@ -20,7 +23,6 @@
   file:
     state: absent
     path: /var/lib/libvirt/images/container-linux1.qcow2
-  notify: Create qcow2 disk
 - name: Create qcow2 disk
   shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
   args:
