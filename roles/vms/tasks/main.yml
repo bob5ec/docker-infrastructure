@@ -24,11 +24,12 @@
 
 #qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
 
-#- name: Create qcow2 disk
-#  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
-#  args:
-#    chdir: /var/lib/libvirt/images/
-#    creates: container-linux1.qcow2
+#TODO this is renundant code compared to the trigger
+- name: Create qcow2 disk
+  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
+  args:
+    chdir: /var/lib/libvirt/images/
+    creates: container-linux1.qcow2
 
 #old: domain=/var/lib/libvirt/images/container-linux/container-linux1-domain.xml
 #domain=/etc/libvirt/qemu/container-linux1.xml
