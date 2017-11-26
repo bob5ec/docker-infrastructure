@@ -38,17 +38,18 @@
   shell: virt-install \
     --connect qemu:///system \
     --import \
-    --name container-linux1 \
+    --name "{{ env }}{{item}}" \
     --ram 1024 --vcpus 1 \
     --os-type=linux \
     --os-variant=virtio26 \
-    --disk path=container-linux1.qcow2,format=qcow2,bus=virtio \
+    --disk "path={{ env }}{{item}}.qcow2,format=qcow2,bus=virtio" \
     --vnc --noautoconsole \
-    --network bridge=dev \
-    --print-xml > container-linux1-domain-pre.xml
+    --network "bridge={{ env }}" \
+    --print-xml > "{{ env }}{{item}}-domain-pre.xml"
   args:
     chdir: /var/lib/libvirt/images/
-    creates: /var/lib/libvirt/images/container-linux1-domain-pre.xml
+    creates: "/var/lib/libvirt/images/{{ env }}{{item}}-domain-pre.xml"
+  with_sequence: "count={{ vm_count }}"
 #    --name {{ envs[0]|quote }} \
 #    --network bridge=virbr0 \
 #    --graphics none \
