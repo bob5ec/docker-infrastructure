@@ -28,7 +28,7 @@
   shell: "qemu-img create -f qcow2 -b coreos_production_qemu_image.img {{ env }}{{item}}.qcow2"
   args:
     chdir: /var/lib/libvirt/images/
-    creates: container-linux1.qcow2
+    creates: "{{ env }}{{item}}.qcow2"
   with_sequence: "count={{ vm_count }}"
 
 - name: create VM
