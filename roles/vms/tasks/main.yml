@@ -60,37 +60,42 @@
 - name: set ignition file in xml
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
 #ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
-  shell: cp container-linux1-domain-pre.xml container-linux1-domain.xml; \
-    xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "container-linux1-domain.xml"; \
-    xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "container-linux1-domain.xml"; \
-    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "container-linux1-domain.xml"; \
-    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "container-linux1-domain.xml"; \
-    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "container-linux1-domain.xml"; \
-    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[2]" -t attr -n "value" -v "name=opt/com.coreos/config,file=/var/lib/libvirt/images/provision.ign" "container-linux1-domain.xml"
+  shell: cp "{{ env }}{{item}}-domain-pre.xml" "{{ env }}{{item}}-domain.xml;" \
+    xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "{{ env }}{{item}}-domain.xml"; \
+    xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "{{ env }}{{item}}-domain.xml"; \
+    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "{{ env }}{{item}}-domain.xml"; \
+    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "{{ env }}{{item}}-domain.xml"; \
+    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "{{ env }}{{item}}-domain.xml"; \
+    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[2]" -t attr -n "value" -v "name=opt/com.coreos/config,file=/var/lib/libvirt/images/provision.ign" "{{ env }}{{item}}-domain.xml"
   args:
     chdir: /var/lib/libvirt/images/
-    creates: /var/lib/libvirt/images/container-linux1-domain.xml
+    creates: "/var/lib/libvirt/images/{{ env }}{{item}}-domain.xml"
+  with_sequence: "count={{ vm_count }}"
 
+#TODO different dev, qa, and prod ignition??
 - name: Copy Ignition Config
   copy:
     src: "{{ role_path }}/files/provision.ign"
     dest: /var/lib/libvirt/images/provision.ign
   notify: Reset Container Linux
 
-- name: Set CoreOS Envirounment
-  copy:
-    src: "{{ role_path }}/files/provision.ign"
-    dest: /var/lib/libvirt/images/provision.ign
+#- name: Set CoreOS Envirounment
+#  copy:
+#    src: "{{ role_path }}/files/provision.ign"
+#    dest: /var/lib/libvirt/images/provision.ign
 
 - name: define VM
   virt:
-    name: container-linux1
+    name: "{{ env }}{{item}}"
     command: define
-    xml: "{{lookup('file', '/var/lib/libvirt/images/container-linux1-domain.xml') }}"
+    xml: "{{lookup('file', '/var/lib/libvirt/images/{{ env }}{{item}}-domain.xml') }}"
+  with_sequence: "count={{ vm_count }}"
+
 - name: run VM
   virt:
-    name: container-linux1
+    name: "{{ env }}{{item}}"
     state: running
+  with_sequence: "count={{ vm_count }}"
 #virsh define $domain
 #virsh start container-linux1
 
