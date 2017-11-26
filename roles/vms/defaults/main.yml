@@ -1,2 +1,4 @@
 ---
 # defaults file for vms
+env: dev
+vm_count: 3

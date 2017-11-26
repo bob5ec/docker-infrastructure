@@ -9,8 +9,6 @@
       - bzip2
     state: present
 
-#wget https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
-#bunzip2 coreos_production_qemu_image.bz2
 - name: Download Container Linux
   get_url:
     url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
@@ -22,18 +20,16 @@
 #  notify:
 #    - Reset Container Linux
 
-#qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
-
+#env, vm_count
+#TODO env name and number of vms as parameter to this role
+#TODO run this role for each env
 #TODO this is renundant code compared to the trigger
 - name: Create qcow2 disk
-  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
+  shell: "qemu-img create -f qcow2 -b coreos_production_qemu_image.img {{ env }}{{item}}.qcow2"
   args:
     chdir: /var/lib/libvirt/images/
     creates: container-linux1.qcow2
-
-#old: domain=/var/lib/libvirt/images/container-linux/container-linux1-domain.xml
-#domain=/etc/libvirt/qemu/container-linux1.xml
-
+  with_sequence: "count={{ vm_count }}"
 
 - name: create VM
 # this step creates a temp file as well...
@@ -79,6 +75,11 @@
     src: "{{ role_path }}/files/provision.ign"
     dest: /var/lib/libvirt/images/provision.ign
   notify: Reset Container Linux
+
+- name: Set CoreOS Envirounment
+  copy:
+    src: "{{ role_path }}/files/provision.ign"
+    dest: /var/lib/libvirt/images/provision.ign
 
 - name: define VM
   virt:
