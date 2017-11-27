@@ -12,4 +12,5 @@
       - prod
 
   roles:
-    - vms
+    - { role: vms, env: "{{ item }}" }
+  with_items: "{{ envs }}"
