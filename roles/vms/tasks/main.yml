@@ -20,8 +20,6 @@
 #  notify:
 #    - Reset Container Linux
 
-#env, vm_count
-#TODO env name and number of vms as parameter to this role
 #TODO run this role for each env
 #TODO this is renundant code compared to the trigger
 - name: Create qcow2 disk
@@ -60,7 +58,7 @@
 - name: set ignition file in xml
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
 #ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
-  shell: cp "{{ env }}{{item}}-domain-pre.xml" "{{ env }}{{item}}-domain.xml;" \
+  shell: "cp {{ env }}{{item}}-domain-pre.xml {{ env }}{{item}}-domain.xml;" \
     xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "{{ env }}{{item}}-domain.xml"; \
     xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "{{ env }}{{item}}-domain.xml"; \
     xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "{{ env }}{{item}}-domain.xml"; \
@@ -72,6 +70,7 @@
     creates: "/var/lib/libvirt/images/{{ env }}{{item}}-domain.xml"
   with_sequence: "count={{ vm_count }}"
 
+#TODO assign different IP to each coreosVM via ignition. Create file with template or use /etc/envirounment
 #TODO different dev, qa, and prod ignition??
 - name: Copy Ignition Config
   copy:
