@@ -58,7 +58,7 @@
 - name: set ignition file in xml
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
 #ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
-  shell: "cp {{ env }}{{item}}-domain-pre.xml {{ env }}{{item}}-domain.xml;" \
+  shell: cp "{{ env }}{{item}}-domain-pre.xml" "{{ env }}{{item}}-domain.xml"; \
     xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "{{ env }}{{item}}-domain.xml"; \
     xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "{{ env }}{{item}}-domain.xml"; \
     xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "{{ env }}{{item}}-domain.xml"; \
