@@ -80,7 +80,7 @@
 #TODO 1. add bootstrap files to ignition with master only 2. set master/worker as var?
 #TODO different dev, qa, and prod ignition??
 - name: 3... 2... 1... Create Ignition
-  template: src=ignition.j2 "dest=/var/lib/libvirt/images/{{env}}{{item}}.yml"
+  template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
   with_sequence: "count={{ vm_count }}"
 #  notify: Reset Container Linux
 
