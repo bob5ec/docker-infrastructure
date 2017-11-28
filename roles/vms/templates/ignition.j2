@@ -1,0 +1,98 @@
+passwd:
+  users:
+    - name: root
+      password_hash: "$6$bT.CKtOX$zUvsBWyE1qK3KUVIk.xyc24dQc605vigJgrti0YyjKpQ1yc6KmYUq8CL6FQ11UC3X45XNvNgJNWNzSaLb.mAq/"
+      ssh_authorized_keys:
+        - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDRrv5XeKyECmRaG0a2NoovFWJJgP91/Xrcei2m5QNKkzpAcj7W2wJfM1n4qRAqwKKLJXeIWuLc+uoRLBVl2WyfKf5sQnGEWdommyubRYXi9EWSRf08XPNGntNKJRBqVLvYfg8PWFuqmhzKhgA2mT+kXcKlPtHvq60banc8gZHuPH+r7VSSsgOaBYPNvtIm3Tzzrgy3omXrgtWVUbCuYkdg2Q6y+tPM5W5EeeviqESsc1+hjQu5U3Qp/1emC+7dkLuBfuwb1VeMWcmp4v4juPc4T+aUMZLQ+xXqE3JofJP1g9ncgPKsdU6BKTcDzafhs3QswIB79El1QGZJDiMUHQ7D"
+#TODO auto config network
+networkd:
+  units:
+    - name: static.network
+      contents: |
+        [Match]
+        Name=eth0
+
+        [Network]
+        Address={{network}}.1{{item}}/24
+        Gateway={{network}}.1
+        DNS={{network}}.1
+etcd:
+# https://coreos.com/os/docs/latest/dynamic-data.html
+#  name: "{HOSTNAME}"
+#  initial_advertise_peer_urls: "http://{PRIVATE_IPV4}:2380"
+#  listen_peer_urls: "http://{PRIVATE_IPV4}:2380"
+#  advertise_client_urls: "http://{PRIVATE_IPV4}:2379"
+#  listen_client_urls: "http://0.0.0.0:2379"
+#  initial_cluster: "{HOSTNAME}=http://{PRIVATE_IPV4}:2380"
+  initial_cluster_state: new
+  initial_cluster_token: {{env}}
+  name: {{env}}{{item}}
+  initial_advertise_peer_urls: http://{{network}}.1{{item}}:2380
+  listen_peer_urls: http://{{network}}.1{{item}}:2380
+  advertise_client_urls: http://{{network}}.1{{item}}:2379
+  listen_client_urls: http://0.0.0.0:2379
+  initial_cluster: {{env}}1=http://{{network}}.11:2380{% for number in range(2,vm_count+1) %},{{env}}{{loop.index}}=http://{{network}}.1{{loop.index}}:2380{% endfor %}
+#  initial_cluster: core-1=http://{{network}}.1{{item}}:2380
+#data_dir: data.etcd
+#  listen_peer_urls: http://$private_ipv4:2380,http://$private_ipv4:7001
+#  listen_client_urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+#  initial_cluster ${NAME_1}=http://${HOST_1}:2380,${NAME_2}=http://${HOST_2}:2380,${NAME_3}=http://${HOST_3}:2380
+#  discovery: https://discovery.etcd.io/@param:coreos-cluster-token
+#TODO put files into files dir
+systemd:
+  units:
+    - name: etcd-member.service
+      enabled: true
+    - name: cluster-bootstrap.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Cluster Bootstrap
+        Requires=docker.service
+        Requires=etcd-member.service
+        After=docker.service
+        After=etcd-member.service
+        
+        [Service]
+        EnvironmentFile=-/etc/environment
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStartPre=-/usr/bin/rm -rf /etc/coreos-docker-swarm-cluster
+        ExecStartPre=/usr/bin/git clone https://github.com/{{github_user}}/coreos-docker-swarm-cluster.git /etc/coreos-docker-swarm-cluster
+        ExecStart=/etc/coreos-docker-swarm-cluster/bootstrap.sh {{node_role}}
+        
+#        [Install]
+#        WantedBy=multi-user.target
+#    - name: deploy.service
+#      enabled: true
+#      contents: |
+#        [Unit]
+#        Description=Cluster Bootstrap
+#        Requires=docker.service
+#        Requires=etcd-member.service
+#        After=docker.service
+#        After=etcd-member.service
+#        
+#        [Service]
+#        EnvironmentFile=-/etc/environment
+#        Type=oneshot
+#        RemainAfterExit=yes
+#        ExecStartPre=-/usr/bin/rm -rf /etc/coreos-docker-swarm-cluster
+#        ExecStartPre=/usr/bin/git clone https://github.com/bob5ec/coreos-docker-swarm-cluster.git /etc/coreos-docker-swarm-cluster
+#        ExecStart=/etc/coreos-docker-swarm-cluster/bootstrap.sh {{node_role}}
+
+locksmith:
+  reboot_strategy: "etcd-lock"
+#TODO? set numer of nodes allowed to rebot https://coreos.com/os/docs/latest/update-strategies.html
+storage:
+  files:
+    - filesystem: root
+      path: /etc/custom-environment
+      mode: 755
+      contents:
+        inline: |
+          COREOS_PRIVATE_IPV4={{network}}.1{{item}}
+          NODE_ROLE={{node_role}}
+          SLACK_WEBHOOK_URL={{slack_webhook_url}}
+          SLACK_CHANNEL={{slack_channel}}
+
