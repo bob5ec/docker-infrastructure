@@ -4,8 +4,9 @@
 #  notify: shut down VM
 #- name: shut down VM
   virt:
-    name: container-linux1
+    name: "{{env}}{{item}}"
     state: shutdown
+  with_sequence: "count={{ vm_count }}"
   notify:
     - wait for VM to shut down
     - Clean disk
@@ -13,7 +14,8 @@
     - run VM
 - name: wait for VM to shut down
   pause:
-    seconds: 5
+    seconds: 3
+  with_sequence: "count={{ vm_count }}"
 #TODO this notify does not trigger...
 #- name: wait for VM to shut down
 #  wait_for:
@@ -23,16 +25,21 @@
 - name: Clean disk
   file:
     state: absent
-    path: /var/lib/libvirt/images/container-linux1.qcow2
+    path: "/var/lib/libvirt/images/{{env}}{{item}}.qcow2"
+  with_sequence: "count={{ vm_count }}"
+
 - name: Create qcow2 disk
-  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img container-linux1.qcow2
+  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img "{{env}}{{item}}.qcow2"
   args:
     chdir: /var/lib/libvirt/images/
-    creates: container-linux1.qcow2
+    creates: "{{env}}{{item}}.qcow2"
+  with_sequence: "count={{ vm_count }}"
+
 - name: run VM
   virt:
-    name: container-linux1
+    name: "{{env}}{{item}}"
     state: running
+  with_sequence: "count={{ vm_count }}"
 
 
 - name: Compile yml to ign
