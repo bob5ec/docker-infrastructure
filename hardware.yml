@@ -12,6 +12,6 @@
       - prod
 
   roles:
-    - { role: vms, env: "dev" }
-    - { role: vms, env: "qa" }
-    - { role: vms, env: "prod" }
+    - { role: vms, env: "dev",   network: "192.168.3" }
+    - { role: vms, env: "qa" ,   network: "192.168.4" }
+    - { role: vms, env: "prod" , network: "192.168.5" }
