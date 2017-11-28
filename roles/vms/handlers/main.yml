@@ -33,3 +33,11 @@
   virt:
     name: container-linux1
     state: running
+
+
+- name: Compile yml to ign
+  shell: "ct -in-file {{env}}{{item}}.yml -out-file {{env}}{{item}}.ign"
+  args:
+    chdir: /var/lib/libvirt/images/
+    creates: "{{env}}{{item}}.ign"
+  with_sequence: "count={{ vm_count }}"

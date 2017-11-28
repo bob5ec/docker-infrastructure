@@ -59,7 +59,6 @@
         vlan:
           raw-device: enp0s31f6
       - device: vlan5
-        method: manual
         method: static
         address: 192.168.5.2
         gateway: 192.168.5.1
