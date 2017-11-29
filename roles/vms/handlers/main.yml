@@ -45,5 +45,5 @@
 #       state: running
 #     with_sequence: "count={{ vm_count }}"
 
-  when: item.changed
-  with_items: "{{ ignition.results }}"
+#  when: item.changed
+#  with_items: "{{ ignition.results }}"
