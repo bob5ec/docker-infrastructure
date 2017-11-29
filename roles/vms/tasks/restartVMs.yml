@@ -6,7 +6,7 @@
   shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
   args:
     chdir: /var/lib/libvirt/images/
-    creates: "{{env}}{{item.item}}.ign"
+#    creates: "{{env}}{{item.item}}.ign"
 
 - name: Reset Container Linux
   virt:
@@ -32,7 +32,7 @@
   shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img "{{env}}{{item.item}}.qcow2"
   args:
     chdir: /var/lib/libvirt/images/
-    creates: "{{env}}{{item.item}}.qcow2"
+#    creates: "{{env}}{{item.item}}.qcow2"
 
 - name: run VM
   virt:
