@@ -37,17 +37,17 @@
   with_sequence: "count={{ vm_count }}"
 
 # ensure a clean state #TODO maybe this can be doe via some ansible state construct???
-- name: stop VM
-  virt:
-    name: "{{ env }}{{item}}"
-    state: shutdown
-  with_sequence: "count={{ vm_count }}"
-
-- name: undefine VM
-  virt:
-    name: "{{ env }}{{item}}"
-    command: undefine
-  with_sequence: "count={{ vm_count }}"
+#- name: stop VM
+#  virt:
+#    name: "{{ env }}{{item}}"
+#    state: shutdown
+#  with_sequence: "count={{ vm_count }}"
+#
+#- name: undefine VM
+#  virt:
+#    name: "{{ env }}{{item}}"
+#    command: undefine
+#  with_sequence: "count={{ vm_count }}"
 
 - name: create VM
 # this step creates a temp file as well...
