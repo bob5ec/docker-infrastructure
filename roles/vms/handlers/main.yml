@@ -2,12 +2,6 @@
 #TODO roling update to prevent downtime of running containers. Requires docker swarm or/and lock@etcd
 #TODO run over all vms (handler is called only once per ansible run)
 
-- name: Attempt and gracefull roll back demo
-     block:
-       - debug: msg='I execute normally'
-       - command: /bin/false
-       - debug: msg='I never execute, due to the above task failing'
-
 #- name: restart VMs
 #    block:
 #      - shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"

@@ -20,6 +20,29 @@
 #  notify:
 #    - Reset Container Linux
 
+#TODO get notified about an update (don't use latest)
+- name: get Container Linux Config Transpiler (ct)
+  get_url:
+    url: https://github.com/coreos/container-linux-config-transpiler/releases/download/v0.5.0/ct-v0.5.0-x86_64-unknown-linux-gnu
+    dest: /usr/local/bin/ct
+    mode: 0755
+
+#TODO assign different IP to each coreosVM via ignition. Create file with template or use /etc/envirounment
+#TODO 1. add bootstrap files to ignition with master only 2. set master/worker as var?
+#TODO different dev, qa, and prod ignition??
+- name: 3... 2... 1... Create Ignition
+  template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
+  register: ignition
+#  notify:
+#    - Compile yml to ign
+  with_sequence: "count={{ vm_count }}"
+
+- name: Attempt and gracefull roll back demo 
+     block: 
+       - debug: msg='I execute normally' 
+       - command: /bin/false 
+       - debug: msg='I never execute, due to the above task failing' 
+
 #TODO this is renundant code compared to the trigger
 - name: Create qcow2 disk
   shell: "qemu-img create -f qcow2 -b coreos_production_qemu_image.img {{ env }}{{item}}.qcow2"
@@ -69,22 +92,6 @@
     creates: "/var/lib/libvirt/images/{{ env }}{{item}}-domain.xml"
   with_sequence: "count={{ vm_count }}"
 
-#TODO get notified about an update (don't use latest)
-- name: get Container Linux Config Transpiler (ct)
-  get_url:
-    url: https://github.com/coreos/container-linux-config-transpiler/releases/download/v0.5.0/ct-v0.5.0-x86_64-unknown-linux-gnu
-    dest: /usr/local/bin/ct
-    mode: 0755
-
-#TODO assign different IP to each coreosVM via ignition. Create file with template or use /etc/envirounment
-#TODO 1. add bootstrap files to ignition with master only 2. set master/worker as var?
-#TODO different dev, qa, and prod ignition??
-- name: 3... 2... 1... Create Ignition
-  template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
-  register: ignition
-#  notify:
-#    - Compile yml to ign
-  with_sequence: "count={{ vm_count }}"
 
 #- name: Copy Ignition Config
 #  copy:
