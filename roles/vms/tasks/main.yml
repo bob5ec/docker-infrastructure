@@ -107,7 +107,9 @@
 #    - restart VMs
   with_sequence: "count={{ vm_count }}"
 
-- include_tasks: "restartVMs.yml"
+# after upgrading to ansible 2.4
+#- include_tasks: "restartVMs.yml"
+- include: "restartVMs.yml"
   when: item.changed
   with_items: "{{ ignition.results }}"
 
