@@ -3,7 +3,7 @@
 #TODO run over all vms (handler is called only once per ansible run)
 
 - name: Who is calling
-  debug: "msg=env:{{env}} item: {{item}} item.item: {{item.item}}"
+  debug: "msg=env:{{env}}item:{{item}}item.item:{{item.item}}"
 
 - name: Compile yml to ign
   shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
@@ -32,7 +32,7 @@
     path: "/var/lib/libvirt/images/{{env}}{{item.item}}.qcow2"
 
 - name: Create qcow2 disk
-  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img "{{env}}{{item}}.qcow2"
+  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img "{{env}}{{item.item}}.qcow2"
   args:
     chdir: /var/lib/libvirt/images/
     creates: "{{env}}{{item.item}}.qcow2"
