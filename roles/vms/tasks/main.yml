@@ -37,7 +37,8 @@
 #    - Compile yml to ign
   with_sequence: "count={{ vm_count }}"
 
-- block: 
+- name: foo
+  block: 
   - debug: msg='I execute normally' 
   - command: /bin/false 
   - debug: msg='I never execute, due to the above task failing' 
