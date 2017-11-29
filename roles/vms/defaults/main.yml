@@ -4,7 +4,7 @@ env: dev
 vm_count: 3
 
 network: "192.168.3"
-node_role: master
+node_role: manager
 
 github_user: bob5ec
 slack_webhook_url: "https://hooks.slack.com/services/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"
