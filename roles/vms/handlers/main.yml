@@ -1,50 +1,50 @@
 ---
 #TODO roling update to prevent downtime of running containers. Requires docker swarm or/and lock@etcd
-- name: Reset Container Linux
-#  notify: shut down VM
-#- name: shut down VM
-  virt:
-    name: "{{env}}{{item}}"
-    state: shutdown
-  with_sequence: "count={{ vm_count }}"
-  notify:
-    - wait for VM to shut down
-    - Clean disk
-    - Create qcow2 disk
-    - run VM
-- name: wait for VM to shut down
-  pause:
-    seconds: 3
-  with_sequence: "count={{ vm_count }}"
-#TODO this notify does not trigger...
-#- name: wait for VM to shut down
-#  wait_for:
-#    host: 192.168.3.2
-#    port: 22
-#    state: stopped
-- name: Clean disk
-  file:
-    state: absent
-    path: "/var/lib/libvirt/images/{{env}}{{item}}.qcow2"
-  with_sequence: "count={{ vm_count }}"
+#TODO run over all vms (handler is called only once per ansible run)
 
-- name: Create qcow2 disk
-  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img "{{env}}{{item}}.qcow2"
-  args:
-    chdir: /var/lib/libvirt/images/
-    creates: "{{env}}{{item}}.qcow2"
-  with_sequence: "count={{ vm_count }}"
+- name: restart VMs
+  block:
+   - name: Compile yml to ign
+     shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
+     args:
+       chdir: /var/lib/libvirt/images/
+       creates: "{{env}}{{item.item}}.ign"
+     with_sequence: "count={{ vm_count }}"
+#   
+#   - name: Reset Container Linux
+#     virt:
+#       name: "{{env}}{{item}}"
+#       state: shutdown
+#     with_sequence: "count={{ vm_count }}"
+#
+#   - name: wait for VM to shut down
+ #    pause:
+#       seconds: 3
+#     with_sequence: "count={{ vm_count }}"
+##TODO this notify does not trigger...
+##- name: wait for VM to shut down
+##  wait_for:
+##    host: 192.168.3.2
+##    port: 22
+##    state: stopped
+#   - name: Clean disk
+#     file:
+#       state: absent
+#       path: "/var/lib/libvirt/images/{{env}}{{item}}.qcow2"
+#     with_sequence: "count={{ vm_count }}"
+#   
+#   - name: Create qcow2 disk
+#     shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img "{{env}}{{item}}.qcow2"
+#     args:
+#       chdir: /var/lib/libvirt/images/
+#       creates: "{{env}}{{item}}.qcow2"
+#     with_sequence: "count={{ vm_count }}"
+#   
+#   - name: run VM
+#     virt:
+#       name: "{{env}}{{item}}"
+#       state: running
+#     with_sequence: "count={{ vm_count }}"
 
-- name: run VM
-  virt:
-    name: "{{env}}{{item}}"
-    state: running
-  with_sequence: "count={{ vm_count }}"
-
-
-- name: Compile yml to ign
-  shell: "ct -in-file {{env}}{{item}}.yml -out-file {{env}}{{item}}.ign"
-  args:
-    chdir: /var/lib/libvirt/images/
-    creates: "{{env}}{{item}}.ign"
-  with_sequence: "count={{ vm_count }}"
+  when: item.changed
+  with_items: "{{ ignition.results }}"

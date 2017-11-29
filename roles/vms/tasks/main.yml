@@ -81,10 +81,10 @@
 #TODO different dev, qa, and prod ignition??
 - name: 3... 2... 1... Create Ignition
   template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
+  register: ignition
+#  notify:
+#    - Compile yml to ign
   with_sequence: "count={{ vm_count }}"
-  notify:
-    - Compile yml to ign
-    - Reset Container Linux
 
 #- name: Copy Ignition Config
 #  copy:
