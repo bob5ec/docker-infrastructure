@@ -37,11 +37,10 @@
 #    - Compile yml to ign
   with_sequence: "count={{ vm_count }}"
 
-- name: Attempt and gracefull roll back demo 
-     block: 
-       - debug: msg='I execute normally' 
-       - command: /bin/false 
-       - debug: msg='I never execute, due to the above task failing' 
+- block: 
+  - debug: msg='I execute normally' 
+  - command: /bin/false 
+  - debug: msg='I never execute, due to the above task failing' 
 
 #TODO this is renundant code compared to the trigger
 - name: Create qcow2 disk
