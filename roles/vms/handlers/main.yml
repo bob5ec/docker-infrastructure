@@ -3,12 +3,12 @@
 #TODO run over all vms (handler is called only once per ansible run)
 
 - name: restart VMs
-  block:
-   - shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
-     args:
-       chdir: /var/lib/libvirt/images/
-       creates: "{{env}}{{item.item}}.ign"
-     with_sequence: "count={{ vm_count }}"
+   block:
+    - shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
+      args:
+        chdir: /var/lib/libvirt/images/
+        creates: "{{env}}{{item.item}}.ign"
+      with_sequence: "count={{ vm_count }}"
 #   
 #   - name: Reset Container Linux
 #     virt:
