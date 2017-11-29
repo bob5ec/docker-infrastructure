@@ -4,7 +4,6 @@
 
 - name: restart VMs
   debug: "msg=env:{{env}} item: {{item}} item.item: {{item.item}}"
-  with_items: "{{ ignition.results }}"
 #      - shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
 #        args:
 #          chdir: /var/lib/libvirt/images/

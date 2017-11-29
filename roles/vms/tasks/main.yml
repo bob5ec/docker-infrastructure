@@ -27,20 +27,6 @@
     dest: /usr/local/bin/ct
     mode: 0755
 
-#TODO assign different IP to each coreosVM via ignition. Create file with template or use /etc/envirounment
-#TODO 1. add bootstrap files to ignition with master only 2. set master/worker as var?
-#TODO different dev, qa, and prod ignition??
-- name: 3... 2... 1... Create Ignition
-  template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
-  register: ignition
-  notify:
-    - restart VMs
-  with_sequence: "count={{ vm_count }}"
-
-#- debug: "msg=env: {{env}} item: {{item}} item.item: {{item.item}}"
-#  when: item.changed
-#  notify: 
-#  with_items: "{{ ignition.results }}"
 
 #TODO this is renundant code compared to the trigger
 - name: Create qcow2 disk
@@ -110,6 +96,69 @@
     command: define
     xml: "{{lookup('file', '/var/lib/libvirt/images/{{ env }}{{item}}-domain.xml') }}"
   with_sequence: "count={{ vm_count }}"
+
+#TODO assign different IP to each coreosVM via ignition. Create file with template or use /etc/envirounment
+#TODO 1. add bootstrap files to ignition with master only 2. set master/worker as var?
+#TODO different dev, qa, and prod ignition??
+- name: 3... 2... 1... Create Ignition
+  template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
+  register: ignition
+#  notify:
+#    - restart VMs
+  with_sequence: "count={{ vm_count }}"
+
+- include_tasks: "restartVMs.yml"
+  when: item.changed
+  with_items: "{{ ignition.results }}"
+
+#- name: Compile yml to ign
+#- shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
+#  args:
+#    chdir: /var/lib/libvirt/images/
+#    creates: "{{env}}{{item.item}}.ign"
+##  with_sequence: "count={{ vm_count }}"
+
+#- name: Reset Container Linux
+#  virt:
+#    name: "{{env}}{{item.item}}"
+#    state: shutdown
+##  with_sequence: "count={{ vm_count }}"
+#  when: item.changed
+#  with_items: "{{ ignition.results }}"
+
+#- name: wait for VM to shut down
+#  pause:
+#    seconds: 3
+#  with_sequence: "count={{ vm_count }}"
+##TODO this notify does not trigger...
+##- name: wait for VM to shut down
+##  wait_for:
+##    host: 192.168.3.2
+##    port: 22
+##    state: stopped
+#  when: item.changed
+#  with_items: "{{ ignition.results }}"
+
+#- name: Clean disk
+#  file:
+#    state: absent
+#    path: "/var/lib/libvirt/images/{{env}}{{item.item}}.qcow2"
+##  with_sequence: "count={{ vm_count }}"
+#  when: item.changed
+#  with_items: "{{ ignition.results }}"
+#
+#- name: Create qcow2 disk
+#  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img "{{env}}{{item.item}}.qcow2"
+#  args:
+#    chdir: /var/lib/libvirt/images/
+#    creates: "{{env}}{{item.item}}.qcow2"
+##  with_sequence: "count={{ vm_count }}"
+#  when: item.changed
+#  with_items: "{{ ignition.results }}"
+#
+#  when: item.changed
+#  with_items: "{{ ignition.results }}"
+
 
 - name: run VM
   virt:
