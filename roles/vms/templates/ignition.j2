@@ -53,8 +53,8 @@ systemd:
         ExecStartPre=/usr/bin/git clone https://github.com/{{github_user}}/coreos-docker-swarm-cluster.git /etc/coreos-docker-swarm-cluster
         ExecStart=/etc/coreos-docker-swarm-cluster/bootstrap.sh {{node_role}}
         
-#        [Install]
-#        WantedBy=multi-user.target
+        [Install]
+        WantedBy=multi-user.target
 #    - name: deploy.service
 #      enabled: true
 #      contents: |
