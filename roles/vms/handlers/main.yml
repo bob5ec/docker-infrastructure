@@ -3,7 +3,8 @@
 #TODO run over all vms (handler is called only once per ansible run)
 
 - name: restart VMs
-  debug: "msg=env:{{env}}"
+  debug: "msg=env:{{env}} item: {{item}} item.item: {{item.item}}"
+  with_items: "{{ ignition.results }}"
 #      - shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
 #        args:
 #          chdir: /var/lib/libvirt/images/
