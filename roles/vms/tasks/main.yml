@@ -33,13 +33,14 @@
 - name: 3... 2... 1... Create Ignition
   template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
   register: ignition
-#  notify:
-#    - Compile yml to ign
+  notify:
+    - restart VMs
   with_sequence: "count={{ vm_count }}"
 
-- debug: "msg=env: {{env}} item: {{item}} item.item: {{item.item}}"
-  when: item.changed
-  with_items: "{{ ignition.results }}"
+#- debug: "msg=env: {{env}} item: {{item}} item.item: {{item.item}}"
+#  when: item.changed
+#  notify: 
+#  with_items: "{{ ignition.results }}"
 
 #TODO this is renundant code compared to the trigger
 - name: Create qcow2 disk

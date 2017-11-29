@@ -2,8 +2,9 @@
 #TODO roling update to prevent downtime of running containers. Requires docker swarm or/and lock@etcd
 #TODO run over all vms (handler is called only once per ansible run)
 
-#- name: restart VMs
-#    block:
+- name: restart VMs
+  block:
+    - debug: "msg=env:{{env}}"
 #      - shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
 #        args:
 #          chdir: /var/lib/libvirt/images/
@@ -45,5 +46,3 @@
 #       state: running
 #     with_sequence: "count={{ vm_count }}"
 
-#  when: item.changed
-#  with_items: "{{ ignition.results }}"
