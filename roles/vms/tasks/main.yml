@@ -37,9 +37,7 @@
 #    - Compile yml to ign
   with_sequence: "count={{ vm_count }}"
 
-- block: 
-  - debug: msg="start"
-  - debug: "msg=env: {{env}} item: {{item}} item.item: {{item.item}}"
+- debug: "msg=env: {{env}} item: {{item}} item.item: {{item.item}}"
   when: item.changed
   with_items: "{{ ignition.results }}"
 
