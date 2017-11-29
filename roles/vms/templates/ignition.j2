@@ -85,21 +85,22 @@ storage:
           NODE_ROLE={{node_role}}
           SLACK_WEBHOOK_URL={{slack_webhook_url}}
           SLACK_CHANNEL={{slack_channel}}
-    - filesystem: root
-      path: /usr/local/bin/bootstrap
-      mode: 755
-      contents:
-        inline: |
-          {{lookup('file', '{{ role_path }}/files/bootstrap')|indent(width=10) }}
-    - filesystem: root
-      path: /usr/local/bin/join-swarm-cluster
-      mode: 755
-      contents:
-        inline: |
-          {{lookup('file', '{{ role_path }}/files/join-swarm-cluster')|indent(width=10) }}
-    - filesystem: root
-      path: /usr/local/bin/slack
-      mode: 755
-      contents:
-        inline: |
-          {{lookup('file', '{{ role_path }}/files/slack')|indent(width=10) }}
+# TODO add files
+#    - filesystem: root
+#      path: /usr/local/bin/bootstrap
+#      mode: 755
+#      contents:
+#        inline: |
+#          {{lookup('file', '{{ role_path }}/files/bootstrap')|indent(width=10) }}
+#    - filesystem: root
+#      path: /usr/local/bin/join-swarm-cluster
+#      mode: 755
+#      contents:
+#        inline: |
+#          {{lookup('file', '{{ role_path }}/files/join-swarm-cluster')|indent(width=10) }}
+#    - filesystem: root
+#      path: /usr/local/bin/slack
+#      mode: 755
+#      contents:
+#        inline: |
+#          {{lookup('file', '{{ role_path }}/files/slack')|indent(width=10) }}
