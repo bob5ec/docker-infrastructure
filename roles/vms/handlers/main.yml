@@ -4,7 +4,7 @@
 
 - name: restart VMs
   block:
-   -  shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
+   - shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
      args:
        chdir: /var/lib/libvirt/images/
        creates: "{{env}}{{item.item}}.ign"
