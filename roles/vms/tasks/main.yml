@@ -109,7 +109,7 @@
 
 # after upgrading to ansible 2.4
 #- include_tasks: "restartVMs.yml"
-- include: "restartVMs.yml"
+- include: "{{ role_path }}/tasks/restartVMs.yml"
   when: item.changed
   with_items: "{{ ignition.results }}"
 
