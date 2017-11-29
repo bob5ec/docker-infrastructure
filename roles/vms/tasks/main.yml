@@ -91,12 +91,15 @@
   with_sequence: "count={{ vm_count }}"
 
 
-#- name: Copy Ignition Config
+#- name: Get bootstrap scripts
 #  copy:
-#    src: "{{ role_path }}/files/provision.ign"
-#    dest: /var/lib/libvirt/images/provision.ign
-#  notify: Reset Container Linux
-
+#    src: "{{ role_path }}/files/{{ item }}"
+#    dest: "/usr/local/bin/{{ item }}"
+#  with_items:
+#    - 'bootstrap'
+#    - 'join-swarm-cluster'
+#    - 'slack'
+#    - { src: 'bootstrap', dest: '' }
 
 #- name: Set CoreOS Envirounment
 #  copy:
@@ -110,14 +113,11 @@
     xml: "{{lookup('file', '/var/lib/libvirt/images/{{ env }}{{item}}-domain.xml') }}"
   with_sequence: "count={{ vm_count }}"
 
-#TODO assign different IP to each coreosVM via ignition. Create file with template or use /etc/envirounment
 #TODO 1. add bootstrap files to ignition with master only 2. set master/worker as var?
-#TODO different dev, qa, and prod ignition??
+#TODO use ignition to register a deploy container that contains docker-compose
 - name: 3... 2... 1... Create Ignition
   template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
   register: ignition
-#  notify:
-#    - restart VMs
   with_sequence: "count={{ vm_count }}"
 
 # after upgrading to ansible 2.4
@@ -126,128 +126,11 @@
   when: item.changed
   with_items: "{{ ignition.results }}"
 
-#- name: Compile yml to ign
-#- shell: "ct -in-file {{env}}{{item.item}}.yml -out-file {{env}}{{item.item}}.ign"
-#  args:
-#    chdir: /var/lib/libvirt/images/
-#    creates: "{{env}}{{item.item}}.ign"
-##  with_sequence: "count={{ vm_count }}"
-
-#- name: Reset Container Linux
-#  virt:
-#    name: "{{env}}{{item.item}}"
-#    state: shutdown
-##  with_sequence: "count={{ vm_count }}"
-#  when: item.changed
-#  with_items: "{{ ignition.results }}"
-
-#- name: wait for VM to shut down
-#  pause:
-#    seconds: 3
-#  with_sequence: "count={{ vm_count }}"
-##TODO this notify does not trigger...
-##- name: wait for VM to shut down
-##  wait_for:
-##    host: 192.168.3.2
-##    port: 22
-##    state: stopped
-#  when: item.changed
-#  with_items: "{{ ignition.results }}"
-
-#- name: Clean disk
-#  file:
-#    state: absent
-#    path: "/var/lib/libvirt/images/{{env}}{{item.item}}.qcow2"
-##  with_sequence: "count={{ vm_count }}"
-#  when: item.changed
-#  with_items: "{{ ignition.results }}"
-#
-#- name: Create qcow2 disk
-#  shell: qemu-img create -f qcow2 -b coreos_production_qemu_image.img "{{env}}{{item.item}}.qcow2"
-#  args:
-#    chdir: /var/lib/libvirt/images/
-#    creates: "{{env}}{{item.item}}.qcow2"
-##  with_sequence: "count={{ vm_count }}"
-#  when: item.changed
-#  with_items: "{{ ignition.results }}"
-#
-#  when: item.changed
-#  with_items: "{{ ignition.results }}"
-
-
 - name: run VM
   virt:
     name: "{{ env }}{{item}}"
     state: running
   with_sequence: "count={{ vm_count }}"
-#virsh define $domain
-#virsh start container-linux1
-
-#
-#virsh define $domain
-#virsh start container-linux1
-
-# use ignition to register a deploy container that contains docker-compose
-
-
-#Container Linux deploy script
-
-#create xml file
-#domain=/var/lib/libvirt/images/container-linux/container-linux1-domain.xml
-
-#virt-install --connect qemu:///system \
-#             --import \
-#             --name container-linux1 \
-#             --ram 1024 --vcpus 1 \
-#             --os-type=linux \
-#             --os-variant=virtio26 \
-#             --disk path=/var/lib/libvirt/images/container-linux/container-linux1.qcow2,format=qcow2,bus=virtio \
-#             --vnc --noautoconsole \
-#             --print-xml > $domain
-
-# set ignition file in xml
-
-#ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
-#
-#xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "${domain}"
-#xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "${domain}"
-#xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "${domain}"
-#xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "${domain}"
-#xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "${domain}"
-#xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[2]" -t attr -n "value" -v "name=opt/com.coreos/config,file=${ignition_file}" "${domain}"
-#
-#virsh define $domain
-#virsh start container-linux1
-
-#- name: get libvirt for python
-#  apt:
-#    name: python-libvirt
-#    state: present
-
-#- name: define vm
-#  virt:
-#    name: foo
-#    command: define
-#    xml: "{{ lookup('template', playbook_dir + '/templates/container-template.xml.j2') }}"
-#    xml: "
-#<domain type='kvm'>
-#  <name>{{ envs[0] }}</name>
-#  <memory unit='KiB'>1048576</memory>
-#  <currentMemory unit='KiB'>1048576</currentMemory>
-#  <vcpu placement='static'>1</vcpu>
-#  <os>
-#    <type arch='x86_64' machine='pc-i440fx-2.1'>hvm</type>
-#  </os>
-#  <features>
-#    <acpi/>
-#
-#    </redirdev>
-#    <memballoon model='virtio'>
-#      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
-#    </memballoon>
-#  </devices>
-#</domain>
-#"
 
 
 #- name: Create VM
@@ -256,23 +139,3 @@
 #   until: result.status.find("shutdown") != -1 
 #   retries: 30 
 #   delay: 5 
-
-
-# ALTERNATIVE the debian native way
-# run vm-preseed install.
-# After install finished run ansible-pull directly on the new machine, 
-# set ansible pull branch and preseed branch differently: PROD = master, qa=qa, dev=dev
-#- name: create VM from install media
-#  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
-#    virt-install \
-#    --name {{ envs[0]|quote }} \
-#    --ram 1024 \
-#    --disk size=8 \
-#    --vcpus 1 \
-#    --os-type linux \
-#    --os-variant generic \
-#    --network bridge=virbr0 \
-#    --graphics none \
-#    --console pty,target_type=serial \
-#    --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
-#    --extra-args 'console=ttyS0,115200n8 serial'

@@ -49,9 +49,7 @@ systemd:
         EnvironmentFile=-/etc/environment
         Type=oneshot
         RemainAfterExit=yes
-        ExecStartPre=-/usr/bin/rm -rf /etc/coreos-docker-swarm-cluster
-        ExecStartPre=/usr/bin/git clone https://github.com/{{github_user}}/coreos-docker-swarm-cluster.git /etc/coreos-docker-swarm-cluster
-        ExecStart=/etc/coreos-docker-swarm-cluster/bootstrap.sh {{node_role}}
+        ExecStart=/usr/local/bin/bootstrap.sh {{node_role}}
         
         [Install]
         WantedBy=multi-user.target
@@ -87,3 +85,21 @@ storage:
           NODE_ROLE={{node_role}}
           SLACK_WEBHOOK_URL={{slack_webhook_url}}
           SLACK_CHANNEL={{slack_channel}}
+    - filesystem: root
+      path: /usr/local/bin/bootstrap
+      mode: 755
+      contents:
+        inline: |
+          {{lookup('file', '{{ role_path }}/files/bootstrap') }}
+    - filesystem: root
+      path: /usr/local/bin/join-swarm-cluster
+      mode: 755
+      contents:
+        inline: |
+          {{lookup('file', '{{ role_path }}/files/join-swarm-cluster') }}
+    - filesystem: root
+      path: /usr/local/bin/slack
+      mode: 755
+      contents:
+        inline: |
+          {{lookup('file', '{{ role_path }}/files/slack') }}
