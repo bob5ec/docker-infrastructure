@@ -90,16 +90,16 @@ storage:
       mode: 755
       contents:
         inline: |
-          {{lookup('file', '{{ role_path }}/files/bootstrap')|indent(width=10, blank=True) }}
+          {{lookup('file', '{{ role_path }}/files/bootstrap')|indent(width=10) }}
     - filesystem: root
       path: /usr/local/bin/join-swarm-cluster
       mode: 755
       contents:
         inline: |
-          {{lookup('file', '{{ role_path }}/files/join-swarm-cluster')|indent(width=10, blank=True) }}
+          {{lookup('file', '{{ role_path }}/files/join-swarm-cluster')|indent(width=10) }}
     - filesystem: root
       path: /usr/local/bin/slack
       mode: 755
       contents:
         inline: |
-          {{lookup('file', '{{ role_path }}/files/slack')|indent(width=10, blank=True) }}
+          {{lookup('file', '{{ role_path }}/files/slack')|indent(width=10) }}
