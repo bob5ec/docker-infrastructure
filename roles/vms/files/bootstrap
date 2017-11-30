@@ -3,13 +3,13 @@
 echo "------------------------------"
 echo "BOOTSTRAP FOR $1 IS RUNNING"
 
-while [ "`etcdctl cluster-health|wc -l`" != 4 ] && [ "`etcdctl get nodes/bootstrapping`" == "1" ]; do
-  echo "An other node is bootstrapping, waiting 5 seconds..."
-  sleep 5
-done
-
-# Set a lock
-etcdctl set /nodes/bootstrapping 1 --ttl 180
+#TODO use etcd locking in the future
+if ! [ "$NODE_NUMBER" = "1" ]; then
+  while ! [ "`etcdctl get /swarm/first_manager`" ]; do
+    echo "An other node is bootstrapping, waiting 5 seconds..."
+    sleep 5
+  done
+fi
 
 export PATH="$PATH:/opt/bin"
 
@@ -17,23 +17,10 @@ set -o allexport
 source /etc/custom-environment
 set +o allexport
 
-#if [ "${COREOS_PRIVATE_IPV4}" == "" ]; then
-#  export COREOS_PRIVATE_IPV4=`ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'`
-#fi
-
 slack -m "_${COREOS_PRIVATE_IPV4}_: Bootstraping a *$1* node" -u $SLACK_WEBHOOK_URL -c "#$SLACK_CHANNEL"
-
-# sleep a random number of seconds to prevent two managers to kick off at the same time
-# this happens when etcd cluster awaits for all manager nodes to come up - at that point 
-# they all get launched nearly at the same time
-#sleep $[ ( $RANDOM % 10 ) + 1 ]s
 
 join-swarm-cluster $1
 
 slack -m "_${COREOS_PRIVATE_IPV4}_: Bootstrap completed for *$1* node at ${COREOS_PRIVATE_IPV4}!" -u $SLACK_WEBHOOK_URL -c "#$SLACK_CHANNEL"
-
-# release the lock
-etcdctl rm /nodes/bootstrapping
-
 echo "BOOTSTRAP FOR $1 COMPLETED"
 echo "------------------------------"

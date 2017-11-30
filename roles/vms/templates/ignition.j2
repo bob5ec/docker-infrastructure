@@ -78,6 +78,7 @@ storage:
       mode: 755
       contents:
         inline: |
+          NODE_NUMBER={{item}}
           COREOS_PRIVATE_IPV4={{network}}.1{{item}}
           NODE_ROLE={{node_role}}
           SLACK_WEBHOOK_URL={{slack_webhook_url}}
