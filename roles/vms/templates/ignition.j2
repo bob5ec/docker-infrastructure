@@ -46,7 +46,7 @@ systemd:
         
         [Install]
         WantedBy=multi-user.target
-    - name: deploy.service
+{#    - name: deploy.service
       enabled: true
       contents: |
         [Unit]
@@ -62,11 +62,11 @@ systemd:
         EnvironmentFile=-/etc/environment
         Type=oneshot
         RemainAfterExit=yes
-#        ExecStartPre=/bin/true
+        ExecStartPre=/bin/true
         ExecStart=/bin/true
 
         [Install]
-        WantedBy=multi-user.target
+        WantedBy=multi-user.target#}
 locksmith:
   reboot_strategy: "etcd-lock"
 #TODO? set numer of nodes allowed to rebot https://coreos.com/os/docs/latest/update-strategies.html
