@@ -24,13 +24,6 @@ etcd:
   advertise_client_urls: http://{{network}}.1{{item}}:2379
   listen_client_urls: http://0.0.0.0:2379
   initial_cluster: {{env}}1=http://{{network}}.11:2380{% for number in range(2,vm_count+1) %},{{env}}{{number}}=http://{{network}}.1{{number}}:2380{% endfor %}
-
-#  initial_cluster: core-1=http://{{network}}.1{{item}}:2380
-#data_dir: data.etcd
-#  listen_peer_urls: http://$private_ipv4:2380,http://$private_ipv4:7001
-#  listen_client_urls: http://0.0.0.0:2379,http://0.0.0.0:4001
-#  discovery: https://discovery.etcd.io/@param:coreos-cluster-token
-#TODO put files into files dir
 systemd:
   units:
     - name: etcd-member.service
@@ -53,24 +46,27 @@ systemd:
         
         [Install]
         WantedBy=multi-user.target
-#    - name: deploy.service
-#      enabled: true
-#      contents: |
-#        [Unit]
-#        Description=Cluster Bootstrap
-#        Requires=docker.service
-#        Requires=etcd-member.service
-#        After=docker.service
-#        After=etcd-member.service
-#        
-#        [Service]
-#        EnvironmentFile=-/etc/environment
-#        Type=oneshot
-#        RemainAfterExit=yes
-#        ExecStartPre=-/usr/bin/rm -rf /etc/coreos-docker-swarm-cluster
-#        ExecStartPre=/usr/bin/git clone https://github.com/bob5ec/coreos-docker-swarm-cluster.git /etc/coreos-docker-swarm-cluster
-#        ExecStart=/etc/coreos-docker-swarm-cluster/bootstrap.sh {{node_role}}
+    - name: deploy.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Deployer
+        Requires=docker.service
+        Requires=etcd-member.service
+        Requires=cluster-bootstrap.service
+        After=docker.service
+        After=etcd-member.service
+        After=cluster-bootstrap.service
+        
+        [Service]
+        EnvironmentFile=-/etc/environment
+        Type=oneshot
+        RemainAfterExit=yes
+#        ExecStartPre=/bin/true
+        ExecStart=/bin/true
 
+        [Install]
+        WantedBy=multi-user.target
 locksmith:
   reboot_strategy: "etcd-lock"
 #TODO? set numer of nodes allowed to rebot https://coreos.com/os/docs/latest/update-strategies.html

@@ -1,5 +1,4 @@
 ---
-#import_playbook: default.yml
 - include: default.yml
 
 - name: provision VMs with CoreOS container linux
@@ -10,7 +9,6 @@
       - dev
       - qa
       - prod
-
   roles:
     - { role: vms, env: "dev",   network: "192.168.3" }
     - { role: vms, env: "qa" ,   network: "192.168.4" }

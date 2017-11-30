@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MANAGER_ADVERTISE_ADDR=`etcdctl get /nodes/managers`
+MANAGER_ADVERTISE_ADDR=`etcdctl get /swarm/first_manager`
 
 role=$1
 
@@ -11,7 +11,7 @@ if [ "$role" == "manager" ]; then
     slack -m "_${COREOS_PRIVATE_IPV4}_: Initiailizing docker swarm cluster" -u $SLACK_WEBHOOK_URL -c "$SLACK_CHANNEL"
     
     docker swarm init --advertise-addr ${COREOS_PRIVATE_IPV4}
-    etcdctl set /nodes/managers ${COREOS_PRIVATE_IPV4}
+    etcdctl set /swarm/first_manager ${COREOS_PRIVATE_IPV4}
     etcdctl set /swarm/manager-join-token `docker swarm join-token -q manager`
     etcdctl set /swarm/worker-join-token `docker swarm join-token -q worker`    
   else
