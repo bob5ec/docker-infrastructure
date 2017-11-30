@@ -3,6 +3,12 @@
 echo "------------------------------"
 echo "BOOTSTRAP FOR $1 IS RUNNING"
 
+export PATH="$PATH:/opt/bin"
+
+set -o allexport
+source /etc/custom-environment
+set +o allexport
+
 #TODO use etcd locking in the future
 if ! [ "$NODE_NUMBER" = "1" ]; then
   while ! [ "`etcdctl get /swarm/first_manager`" ]; do
@@ -10,12 +16,6 @@ if ! [ "$NODE_NUMBER" = "1" ]; then
     sleep 5
   done
 fi
-
-export PATH="$PATH:/opt/bin"
-
-set -o allexport
-source /etc/custom-environment
-set +o allexport
 
 slack -m "_${COREOS_PRIVATE_IPV4}_: Bootstraping a *$1* node" -u $SLACK_WEBHOOK_URL -c "#$SLACK_CHANNEL"
 
