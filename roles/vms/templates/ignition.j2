@@ -49,7 +49,7 @@ systemd:
         EnvironmentFile=-/etc/environment
         Type=oneshot
         RemainAfterExit=yes
-        ExecStart=/usr/local/bin/bootstrap.sh {{node_role}}
+        ExecStart=/opt/bin/bootstrap {{node_role}}
         
         [Install]
         WantedBy=multi-user.target
