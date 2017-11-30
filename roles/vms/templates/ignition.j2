@@ -85,7 +85,7 @@ storage:
           NODE_ROLE={{node_role}}
           SLACK_WEBHOOK_URL={{slack_webhook_url}}
           SLACK_CHANNEL={{slack_channel}}
-# TODO add files
+{## TODO add files
 #    - filesystem: root
 #      path: /usr/local/bin/bootstrap
 #      mode: 755
@@ -104,3 +104,4 @@ storage:
 #      contents:
 #        inline: |
 #          {{lookup('file', '{{ role_path }}/files/slack')|indent(width=10) }}
+#}
