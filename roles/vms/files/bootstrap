@@ -3,7 +3,7 @@
 echo "------------------------------"
 echo "BOOTSTRAP FOR $1 IS RUNNING"
 
-while [ "`etcdctl get nodes/bootstrapping`" == "1" ]; do
+while [ "`etcdctl cluster-health|wc -l`" != 4 ] && [ "`etcdctl get nodes/bootstrapping`" == "1" ]; do
   echo "An other node is bootstrapping, waiting 5 seconds..."
   sleep 5
 done
