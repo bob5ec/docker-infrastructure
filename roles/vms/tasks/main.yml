@@ -11,8 +11,8 @@
 
 - name: Download Container Linux
   get_url:
-    url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
-    #url: https://beta.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
+    #url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
+    url: https://beta.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
     dest: /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2
     mode: 0440
 - name: Extract Container Linux
