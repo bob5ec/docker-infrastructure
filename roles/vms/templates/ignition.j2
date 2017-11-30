@@ -24,6 +24,7 @@ etcd:
   advertise_client_urls: http://{{network}}.1{{item}}:2379
   listen_client_urls: http://0.0.0.0:2379
   initial_cluster: {{env}}1=http://{{network}}.11:2380{% for number in range(2,vm_count+1) %},{{env}}{{number}}=http://{{network}}.1{{number}}:2380{% endfor %}
+
 systemd:
   units:
     - name: etcd-member.service
