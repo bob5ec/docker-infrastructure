@@ -11,6 +11,9 @@ done
 # Set a lock
 etcdctl set /nodes/bootstrapping 1 --ttl 180
 
+echo "PATH: $PATH"
+export PATH="$PATH:/opt/bin"
+
 set -o allexport
 source /etc/custom-environment
 set +o allexport
