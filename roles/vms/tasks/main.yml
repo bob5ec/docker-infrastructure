@@ -17,7 +17,7 @@
     dest: /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2
     mode: 0440
 - name: Extract Container Linux
-  shell: cat /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2 | bunzip2 /var/lib/libvirt/images/coreos_production_qemu_image.img
+  shell: cat /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2 | bunzip2 > /var/lib/libvirt/images/coreos_production_qemu_image.img
   args:
     chdir: /var/lib/libvirt/images/
     creates: /var/lib/libvirt/images/coreos_production_qemu_image.img
