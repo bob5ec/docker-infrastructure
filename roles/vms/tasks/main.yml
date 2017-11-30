@@ -9,6 +9,7 @@
       - bzip2
     state: present
 
+#TODO notify all vm's on new image
 - name: Download Container Linux
   get_url:
     #url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
@@ -16,8 +17,9 @@
     dest: /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2
     mode: 0440
 - name: Extract Container Linux
-  command: creates="/var/lib/libvirt/images/coreos_production_qemu_image.img" |
-    cat /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2 | bunzip2 /var/lib/libvirt/images/coreos_production_qemu_image.img
+  shell: cat /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2 | bunzip2 /var/lib/libvirt/images/coreos_production_qemu_image.img
+    chdir: /var/lib/libvirt/images/
+    creates: /var/lib/libvirt/images/coreos_production_qemu_image.img
 #  notify:
 #    - Reset Container Linux
 
