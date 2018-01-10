@@ -47,27 +47,33 @@ systemd:
         
         [Install]
         WantedBy=multi-user.target
-{#    - name: deploy.service
+    - name: deploy.service
       enabled: true
       contents: |
         [Unit]
-        Description=Deployer
+        Description=Docker Deployer
         Requires=docker.service
-        Requires=etcd-member.service
         Requires=cluster-bootstrap.service
         After=docker.service
-        After=etcd-member.service
         After=cluster-bootstrap.service
         
         [Service]
         EnvironmentFile=-/etc/environment
         Type=oneshot
         RemainAfterExit=yes
-        ExecStartPre=/bin/true
-        ExecStart=/bin/true
+        ExecStart=/opt/bin/docker-deploy
+#TODO WebHook Trigger from Github -> Container
+    - name: deploy.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Run Docker Deployer every 5 minutes
+        
+        [Timer]
+        OnCalendar=*:0/5
 
         [Install]
-        WantedBy=multi-user.target#}
+        WantedBy=multi-user.target
 locksmith:
   reboot_strategy: "etcd-lock"
 #TODO? set numer of nodes allowed to rebot https://coreos.com/os/docs/latest/update-strategies.html
@@ -101,3 +107,9 @@ storage:
       contents:
         inline: |
           {{lookup('file', '{{ role_path }}/files/slack')|indent(width=10) }}
+    - filesystem: root
+      path: /opt/bin/docker-deploy
+      mode: 755
+      contents:
+        inline: |
+          {{lookup('file', '{{ role_path }}/files/docker-deploy')|indent(width=10) }}

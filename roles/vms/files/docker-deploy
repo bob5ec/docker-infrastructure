@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# run deploy only on one node
+if [ "$NODE_NUMBER" = "1" ]; then
+
+	if [ ! -d "$DIRECTORY" ]; then
+		git clone -b {{env}} {{running_docker_stack_repo}} /etc/running_docker_stack_repo
+		cd /etc/running_docker_stack_repo
+	else
+		cd /etc/running_docker_stack_repo
+		git pull
+	fi
+
+	for compose in *.yml; do
+		docker stack deploy --compose-file $compose `basename $compose .yml`
+	done
+fi
