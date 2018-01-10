@@ -60,21 +60,21 @@ systemd:
         [Service]
         EnvironmentFile=-/etc/environment
         Type=oneshot
-#        RemainAfterExit=yes
         ExecStart=/opt/bin/docker-deploy
+#        RemainAfterExit=yes
 #TODO WebHook Trigger from Github -> Container
     - name: deploy.timer
       enabled: true
       contents: |
         [Unit]
         Description=Run Docker Deployer every 5 minutes
-#        Requires=deploy.service
         
         [Timer]
         OnUnitActiveSec=5min
 
         [Install]
         WantedBy=multi-user.target
+#        Requires=deploy.service
 locksmith:
   reboot_strategy: "etcd-lock"
 #TODO? set numer of nodes allowed to rebot https://coreos.com/os/docs/latest/update-strategies.html
