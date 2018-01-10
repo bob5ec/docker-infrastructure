@@ -60,7 +60,7 @@ systemd:
         [Service]
         EnvironmentFile=-/etc/environment
         Type=oneshot
-        RemainAfterExit=yes
+#        RemainAfterExit=yes
         ExecStart=/opt/bin/docker-deploy
 #TODO WebHook Trigger from Github -> Container
     - name: deploy.timer
@@ -68,10 +68,10 @@ systemd:
       contents: |
         [Unit]
         Description=Run Docker Deployer every 5 minutes
-        Requires=deploy.service
+#        Requires=deploy.service
         
         [Timer]
-        OnCalendar=*:0/5
+        OnUnitActiveSec=5min
 
         [Install]
         WantedBy=multi-user.target

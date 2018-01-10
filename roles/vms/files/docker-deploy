@@ -1,5 +1,5 @@
 #!/bin/bash
-
+source /etc/custom-environment
 TARGET="/etc/running_docker_stack_repo"
 # run deploy only on one node
 if [ "$NODE_NUMBER" = "1" ]; then
