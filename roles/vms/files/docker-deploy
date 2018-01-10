@@ -1,13 +1,14 @@
 #!/bin/bash
 
+TARGET="/etc/running_docker_stack_repo"
 # run deploy only on one node
 if [ "$NODE_NUMBER" = "1" ]; then
 
-	if [ ! -d "$DIRECTORY" ]; then
-		git clone -b {{env}} {{running_docker_stack_repo}} /etc/running_docker_stack_repo
-		cd /etc/running_docker_stack_repo
+	if [ ! -d "$TARGET" ]; then
+		git clone -b $env $running_docker_stack_repo $TARGET
+		cd $TARGET
 	else
-		cd /etc/running_docker_stack_repo
+		cd $TARGET
 		git pull
 	fi
 

@@ -68,6 +68,7 @@ systemd:
       contents: |
         [Unit]
         Description=Run Docker Deployer every 5 minutes
+        Requires=deploy.service
         
         [Timer]
         OnCalendar=*:0/5
@@ -89,6 +90,8 @@ storage:
           NODE_ROLE={{node_role}}
           SLACK_WEBHOOK_URL={{slack_webhook_url}}
           SLACK_CHANNEL={{slack_channel}}
+          running_docker_stack_repo={{running_docker_stack_repo}}
+          env={{env}}
     - filesystem: root
       path: /opt/bin/bootstrap
       mode: 755
