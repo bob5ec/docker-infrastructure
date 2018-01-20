@@ -42,7 +42,10 @@
   with_sequence: "count={{ vm_count }}"
 
 - name: Create data disks for nonprod
-  shell: "dd if=/dev/zero of={{ env }}{{item}}-data.img count=10000 && dd if=/dev/zero of={{ env }}{{item}}-data2.img count=10000"
+  shell: dd if=/dev/zero "of={{ env }}{{item}}-data.img" count=10000; \
+    mkfs.ext4 "{{ env }}{{item}}-data.img;" \
+    dd if=/dev/zero "of={{ env }}{{item}}-data2.img" count=10000; \
+    mkfs.ext4 "{{ env }}{{item}}-data2.img;"
   args:
     chdir: /var/lib/libvirt/images/
     creates: "{{ env }}{{item}}-data2.img"
