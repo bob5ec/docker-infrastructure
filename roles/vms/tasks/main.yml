@@ -9,7 +9,8 @@
       - bzip2
     state: present
 
-#TODO notify all vm's on new image
+#TODO download new image if available. Do we need to?
+#TODO restart VMs on file change?
 - name: Download Container Linux
   get_url:
     #url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
@@ -33,12 +34,28 @@
 
 
 #TODO this is renundant code compared to the trigger
-- name: Create qcow2 disk
+- name: Create root disk
   shell: "qemu-img create -f qcow2 -b coreos_production_qemu_image.img {{ env }}{{item}}.qcow2"
   args:
     chdir: /var/lib/libvirt/images/
     creates: "{{ env }}{{item}}.qcow2"
   with_sequence: "count={{ vm_count }}"
+
+- name: Create data disks for nonprod
+  shell: "dd if=/dev/zero of={{ env }}{{item}}-data.qcow2 count=10000 && dd if=/dev/zero of={{ env }}{{item}}-data2.qcow2 count=10000"
+  args:
+    chdir: /var/lib/libvirt/images/
+    creates: "{{ env }}{{item}}-data2.qcow2"
+  with_sequence: "count={{ vm_count }}"
+  when: not env == "prod"
+
+- name: Create data disks for prod
+  shell: "ln -s /dev/xvdb {{ env }}{{item}}-data.qcow2 && ln -s /dev/xvdc {{ env }}{{item}}-data2.qcow2"
+  args:
+    chdir: /var/lib/libvirt/images/
+    creates: "{{ env }}{{item}}-data2.qcow2"
+  with_sequence: "count={{ vm_count }}"
+  when: env == "prod"
 
 # ensure a clean state #TODO maybe this can be doe via some ansible state construct???
 #- name: stop VM
@@ -65,6 +82,8 @@
     --os-type=linux \
     --os-variant=virtio26 \
     --disk "path={{ env }}{{item}}.qcow2,format=qcow2,bus=virtio" \
+    --disk "path={{ env }}{{item}}-data.qcow2,format=raw,bus=virtio" \
+    --disk "path={{ env }}{{item}}-data2.qcow2,format=raw,bus=virtio" \
     --vnc --noautoconsole \
     --network "bridge={{ env }}" \
     --print-xml > "{{ env }}{{item}}-domain-pre.xml"
