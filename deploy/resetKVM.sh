@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /var/lib/libvirt/images
-dev* prod* qa*
+rm dev* prod* qa*
 virsh destroy dev1
 virsh destroy dev2
 virsh destroy dev3
