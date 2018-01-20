@@ -47,15 +47,16 @@
     chdir: /var/lib/libvirt/images/
     creates: "{{ env }}{{item}}-data2.qcow2"
   with_sequence: "count={{ vm_count }}"
-  when: not env == "prod"
-
-- name: Create data disks for prod
-  shell: "ln -s /dev/xvdb {{ env }}{{item}}-data.qcow2 && ln -s /dev/xvdc {{ env }}{{item}}-data2.qcow2"
-  args:
-    chdir: /var/lib/libvirt/images/
-    creates: "{{ env }}{{item}}-data2.qcow2"
-  with_sequence: "count={{ vm_count }}"
-  when: env == "prod"
+#TODO attach real disks
+#  when: not env == "prod"
+#
+#- name: Create data disks for prod
+#  shell: "ln -s /dev/sdb {{ env }}{{item}}-data.qcow2 && ln -s /dev/sdc {{ env }}{{item}}-data2.qcow2"
+#  args:
+#    chdir: /var/lib/libvirt/images/
+#    creates: "{{ env }}{{item}}-data2.qcow2"
+#  with_sequence: "count={{ vm_count }}"
+#  when: env == "prod"
 
 # ensure a clean state #TODO maybe this can be doe via some ansible state construct???
 #- name: stop VM
