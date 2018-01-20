@@ -75,43 +75,43 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
-#    - name: data.mount
-#      enable: true
-#      contents: |
-#        [Unit]
-#        Before=local-fs.target
-#        [Mount]
-#        What=/dev/xvdb
-#        Where=/data
-#        Type=ext4
-#        [Install]
-#        WantedBy=local-fs.target
-#    - name: data2.mount
-#      enable: true
-#      contents: |
-#        [Unit]
-#        Before=local-fs.target
-#        [Mount]
-#        What=/dev/xvdc
-#        Where=/data2
-#        Type=ext4
-#        [Install]
-#        WantedBy=local-fs.target
+    - name: data.mount
+      enable: true
+      contents: |
+        [Unit]
+        Before=local-fs.target
+        [Mount]
+        What=/dev/xvdb
+        Where=/data
+        Type=ext4
+        [Install]
+        WantedBy=local-fs.target
+    - name: data2.mount
+      enable: true
+      contents: |
+        [Unit]
+        Before=local-fs.target
+        [Mount]
+        What=/dev/xvdc
+        Where=/data2
+        Type=ext4
+        [Install]
+        WantedBy=local-fs.target
 locksmith:
   reboot_strategy: "etcd-lock"
 #TODO? set numer of nodes allowed to rebot https://coreos.com/os/docs/latest/update-strategies.html
 storage:
-#  filesystems:
-#    - name: data
-#      mount:
-#        device: /dev/xvdb
-#        format: ext4
-#        wipe_filesystem: false
-#    - name: data2
-#      mount:
-#        device: /dev/xvdc
-#        format: ext4
-#        wipe_filesystem: false
+  filesystems:
+    - name: data
+      mount:
+        device: /dev/xvdb
+        format: ext4
+        wipe_filesystem: false
+    - name: data2
+      mount:
+        device: /dev/xvdc
+        format: ext4
+        wipe_filesystem: false
   files:
     - filesystem: root
       path: /etc/custom-environment
