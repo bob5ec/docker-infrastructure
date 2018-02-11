@@ -42,23 +42,21 @@
   with_sequence: "count={{ vm_count }}"
 
 - name: Create data disks for nonprod
-  shell: dd if=/dev/zero "of={{ env }}{{item}}-data.img" count=10000; \
-    mkfs.ext4 "{{ env }}{{item}}-data.img"; \
-    dd if=/dev/zero "of={{ env }}{{item}}-data2.img" count=10000; \
-    mkfs.ext4 "{{ env }}{{item}}-data2.img"
+  shell: dd if=/dev/zero "of={{ env }}-data.img" count=10000; \
+    mkfs.ext4 "{{ env }}-data.img"; \
+    dd if=/dev/zero "of={{ env }}-data2.img" count=10000; \
+    mkfs.ext4 "{{ env }}-data2.img"
   args:
     chdir: /var/lib/libvirt/images/
-    creates: "{{ env }}{{item}}-data2.img"
-  with_sequence: "count={{ vm_count }}"
+    creates: "{{ env }}-data2.img"
 #TODO attach real disks
 #  when: not env == "prod"
 #
 #- name: Create data disks for prod
-#  shell: "ln -s /dev/sdb {{ env }}{{item}}-data.img && ln -s /dev/sdc {{ env }}{{item}}-data2.img"
+#  shell: "ln -s /dev/sdb {{ env }}-data.img && ln -s /dev/sdc {{ env }}-data2.img"
 #  args:
 #    chdir: /var/lib/libvirt/images/
-#    creates: "{{ env }}{{item}}-data2.img"
-#  with_sequence: "count={{ vm_count }}"
+#    creates: "{{ env }}-data2.img"
 #  when: env == "prod"
 
 # ensure a clean state #TODO maybe this can be doe via some ansible state construct???
@@ -86,8 +84,8 @@
     --os-type=linux \
     --os-variant=virtio26 \
     --disk "path={{ env }}{{item}}.qcow2,format=qcow2,bus=virtio" \
-    --disk "path={{ env }}{{item}}-data.img,format=raw,bus=virtio" \
-    --disk "path={{ env }}{{item}}-data2.img,format=raw,bus=virtio" \
+    --disk "path={{ env }}-data.img,format=raw,bus=virtio" \
+    --disk "path={{ env }}-data2.img,format=raw,bus=virtio" \
     --vnc --noautoconsole \
     --network "bridge={{ env }}" \
     --print-xml > "{{ env }}{{item}}-domain-pre.xml"

@@ -76,12 +76,44 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 #    - name: data.mount
+#      enabled: true
+#      contents: |
+#        [Unit]
+#        Description=Mount data
+#        Before=docker.service
+#        
+#        [Mount]
+#        What=/dev/vdb
+#        Where=/data
+#        Type=ext4
+#        Options=defaults
+#        
+#        [Install]
+#        WantedBy=docker.service
+#    - name: data2.mount
+#      enabled: true
+#      contents: |
+#        [Unit]
+#        Description=Mount data2
+#        Before=docker.service
+#        
+#        [Mount]
+#        What=/dev/vdc
+#        Where=/data2
+#        Type=ext4
+#        Options=defaults
+#        
+#        [Install]
+#        WantedBy=docker.service
+
+#TODO only mount data on the leader node. data2 on second node?
+#    - name: data.mount
 #      enable: true
 #      contents: |
 #        [Unit]
 #        Before=local-fs.target
 #        [Mount]
-#        What=/dev/xvdb
+#        What=/dev/vdb
 #        Where=/data
 #        Type=ext4
 #        [Install]
@@ -92,7 +124,7 @@ systemd:
 #        [Unit]
 #        Before=local-fs.target
 #        [Mount]
-#        What=/dev/xvdc
+#        What=/dev/vdc
 #        Where=/data2
 #        Type=ext4
 #        [Install]
@@ -104,12 +136,12 @@ storage:
 #  filesystems:
 #    - name: data
 #      mount:
-#        device: /dev/xvdb
+#        device: /dev/vdb
 #        format: ext4
 #        wipe_filesystem: false
 #    - name: data2
 #      mount:
-#        device: /dev/xvdc
+#        device: /dev/vdc
 #        format: ext4
 #        wipe_filesystem: false
   files:

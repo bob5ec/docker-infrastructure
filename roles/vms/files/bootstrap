@@ -15,6 +15,12 @@ if ! [ "$NODE_NUMBER" = "1" ]; then
     echo "An other node is bootstrapping, waiting 5 seconds..."
     sleep 5
   done
+else
+  #mount data only on node 1
+  mkdir -p /data
+  mkdir -p /data2
+  mount -t ext4 /dev/vdb /data
+  mount -t ext4 /dev/vdc /data2
 fi
 
 slack -m "_${COREOS_PRIVATE_IPV4}_: Bootstraping a *$1* node" -u $SLACK_WEBHOOK_URL -c "#$SLACK_CHANNEL"
