@@ -2,7 +2,7 @@
 - include: default.yml
 
 - name: provision VMs with CoreOS container linux
-  hosts: all
+  hosts: metal
   remote_user: root
   vars:
     envs:

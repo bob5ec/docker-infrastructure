@@ -5,41 +5,7 @@
   apt:
     name:
       - virtinst
-      - xmlstarlet
-      - bzip2
     state: present
-
-#TODO download new image if available. Do we need to?
-#TODO restart VMs on file change?
-- name: Download Container Linux
-  get_url:
-    #url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
-    url: https://beta.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
-    dest: /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2
-    mode: 0440
-- name: Extract Container Linux
-  shell: cat /var/lib/libvirt/images/coreos_production_qemu_image.img.bz2 | bunzip2 > /var/lib/libvirt/images/coreos_production_qemu_image.img
-  args:
-    chdir: /var/lib/libvirt/images/
-    creates: /var/lib/libvirt/images/coreos_production_qemu_image.img
-#  notify:
-#    - Reset Container Linux
-
-#TODO get notified about an update (don't use latest)
-- name: get Container Linux Config Transpiler (ct)
-  get_url:
-    url: https://github.com/coreos/container-linux-config-transpiler/releases/download/v0.5.0/ct-v0.5.0-x86_64-unknown-linux-gnu
-    dest: /usr/local/bin/ct
-    mode: 0755
-
-
-#TODO this is renundant code compared to the trigger
-- name: Create root disk
-  shell: "qemu-img create -f qcow2 -b coreos_production_qemu_image.img {{ env }}{{item}}.qcow2"
-  args:
-    chdir: /var/lib/libvirt/images/
-    creates: "{{ env }}{{item}}.qcow2"
-  with_sequence: "count={{ vm_count }}"
 
 - name: Create data disks for nonprod
   shell: dd if=/dev/zero "of={{ env }}-data.img" count=10000; \
@@ -59,108 +25,31 @@
 #    creates: "{{ env }}-data2.img"
 #  when: env == "prod"
 
-# ensure a clean state #TODO maybe this can be doe via some ansible state construct???
-#- name: stop VM
-#  virt:
-#    name: "{{ env }}{{item}}"
-#    state: shutdown
-#  with_sequence: "count={{ vm_count }}"
-#
-#- name: undefine VM
-#  virt:
-#    name: "{{ env }}{{item}}"
-#    command: undefine
-#  with_sequence: "count={{ vm_count }}"
 
 - name: create VM
 # this step creates a temp file as well...
 #  command: creates="/etc/libvirt/qemu/container-linux1.xml" |
 #  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
+#    --initrd-inject=/etc/docker-infrastructure/deploy/vm.preseed --extra-args "ks=file:/vm.ks" 
   shell: virt-install \
     --connect qemu:///system \
-    --import \
     --name "{{ env }}{{item}}" \
     --ram 1024 --vcpus 1 \
     --os-type=linux \
     --os-variant=virtio26 \
-    --disk "path={{ env }}{{item}}.qcow2,format=qcow2,bus=virtio" \
+    --disk "path={{ env }}{{item}}.qcow2,format=qcow2,size=8,bus=virtio" \
     --disk "path={{ env }}-data.img,format=raw,bus=virtio" \
     --disk "path={{ env }}-data2.img,format=raw,bus=virtio" \
     --vnc --noautoconsole \
     --network "bridge={{ env }}" \
-    --print-xml > "{{ env }}{{item}}-domain-pre.xml"
+    --graphics none \
+    --console pty,target_type=serial \
+    --location 'ftp://ftp.de.debian.org/debian/dists/stretch/main/installer-amd64/' \
+    --extra-args 'console=ttyS0,115200n8 serial auto=true priority=critical preseed/url=https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/vm.preseed'
   args:
     chdir: /var/lib/libvirt/images/
-    creates: "/var/lib/libvirt/images/{{ env }}{{item}}-domain-pre.xml"
-  with_sequence: "count={{ vm_count }}"
-#    --name {{ envs[0]|quote }} \
-#    --graphics none \
-#    --console pty,target_type=serial \
-#    --location 'http://ftp.nl.debian.org/debian/dists/jessie/main/installer-amd64/' \
-#    --extra-args 'console=ttyS0,115200n8 serial'
-
-#TODO set vm specific ignition
-- name: set ignition file in xml
-#  command: creates="/etc/libvirt/qemu/{{ envs[0]|quote }}.xml" |
-#ignition_file=/var/lib/libvirt/images/container-linux/provision.ign
-  shell: cp "{{ env }}{{item}}-domain-pre.xml" "{{ env }}{{item}}-domain.xml"; \
-    xmlstarlet ed -P -L -i "//domain" -t attr -n "xmlns:qemu" --value "http://libvirt.org/schemas/domain/qemu/1.0" "{{ env }}{{item}}-domain.xml"; \
-    xmlstarlet ed -P -L -s "//domain" -t elem -n "qemu:commandline" "{{ env }}{{item}}-domain.xml"; \
-    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "{{ env }}{{item}}-domain.xml"; \
-    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[1]" -t attr -n "value" -v "-fw_cfg" "{{ env }}{{item}}-domain.xml"; \
-    xmlstarlet ed -P -L -s "//domain/qemu:commandline" -t elem -n "qemu:arg" "{{ env }}{{item}}-domain.xml"; \
-    xmlstarlet ed -P -L -s "(//domain/qemu:commandline/qemu:arg)[2]" -t attr -n "value" -v "name=opt/com.coreos/config,file=/var/lib/libvirt/images/{{env}}{{item}}.ign" "{{ env }}{{item}}-domain.xml"
-  args:
-    chdir: /var/lib/libvirt/images/
-    creates: "/var/lib/libvirt/images/{{ env }}{{item}}-domain.xml"
+    creates: "/etc/libvirt/qemu/{{ env }}{{item}}.xml" |
   with_sequence: "count={{ vm_count }}"
 
-
-#- name: Get bootstrap scripts
-#  copy:
-#    src: "{{ role_path }}/files/{{ item }}"
-#    dest: "/usr/local/bin/{{ item }}"
-#  with_items:
-#    - 'bootstrap'
-#    - 'join-swarm-cluster'
-#    - 'slack'
-#    - { src: 'bootstrap', dest: '' }
-
-#- name: Set CoreOS Envirounment
-#  copy:
-#    src: "{{ role_path }}/files/provision.ign"
-#    dest: /var/lib/libvirt/images/provision.ign
-
-- name: define VM
-  virt:
-    name: "{{ env }}{{item}}"
-    command: define
-    xml: "{{lookup('file', '/var/lib/libvirt/images/{{ env }}{{item}}-domain.xml') }}"
-  with_sequence: "count={{ vm_count }}"
-
-#TODO 1. add bootstrap files to ignition with master only 2. set master/worker as var?
-#TODO use ignition to register a deploy container that contains docker-compose
-- name: 3... 2... 1... Create Ignition
-  template: src=ignition.j2 dest=/var/lib/libvirt/images/{{env}}{{item}}.yml
-  register: ignition
-  with_sequence: "count={{ vm_count }}"
-
-# after upgrading to ansible 2.4
-#- include_tasks: "restartVMs.yml"
-- include: "{{ role_path }}/tasks/restartVMs.yml"
-  when: item.changed
-  with_items: "{{ ignition.results }}"
-
-- name: run VM
-  virt:
-    name: "{{ env }}{{item}}"
-    state: running
-  with_sequence: "count={{ vm_count }}"
-
-
-#- name: Create VM
-#  action: virt name=kvm-guest command=status 
-#   register: result 
-#   until: result.status.find("shutdown") != -1 
-#   retries: 30 
-#   delay: 5 
+#TODO generate ssh_keys
+#TODO deploy private key for VMs to metal

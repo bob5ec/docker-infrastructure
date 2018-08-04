@@ -9,7 +9,7 @@
     - basics
 
 - name: configure and deploy libvirt
-  hosts: all
+  hosts: metal
   remote_user: root
 
   roles:
@@ -29,7 +29,7 @@
 
 #TODO https://github.com/dresden-weekly/ansible-network-interfaces/issues/61
 - name: create VLANs and network interfaces
-  hosts: all
+  hosts: metal
   remote_user: root
   vars:
     envs:
