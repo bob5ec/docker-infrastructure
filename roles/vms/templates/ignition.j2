@@ -181,3 +181,21 @@ storage:
       contents:
         inline: |
           {{lookup('file', '{{ role_path }}/files/docker-deploy')|indent(width=10) }}
+    - filesystem: root
+      path: /opt/bin/convoy-pdata_tools
+      mode: 755
+      contents:
+        inline: |
+          {{lookup('file', '{{ role_path }}/files/convoy-pdata_tools') }}
+    - filesystem: root
+      path: /opt/bin/convoy
+      mode: 755
+      contents:
+        inline: |
+          {{lookup('file', '{{ role_path }}/files/convoy') }}
+    - filesystem: root
+      path: /etc/docker/plugins/convoy.spec
+      mode: 644
+      contents:
+        inline: |
+          unix:///var/run/convoy/convoy.sock

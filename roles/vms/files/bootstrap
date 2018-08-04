@@ -27,6 +27,10 @@ slack -m "_${COREOS_PRIVATE_IPV4}_: Bootstraping a *$1* node" -u $SLACK_WEBHOOK_
 
 join-swarm-cluster $1
 
+if [ "$NODE_NUMBER" = "1" ]; then
+  docker node update --label-add disk=data `docker node inspect self|jq -r '.[0].ID'`
+fi
+
 slack -m "_${COREOS_PRIVATE_IPV4}_: Bootstrap completed for *$1* node at ${COREOS_PRIVATE_IPV4}!" -u $SLACK_WEBHOOK_URL -c "#$SLACK_CHANNEL"
 echo "BOOTSTRAP FOR $1 COMPLETED"
 echo "------------------------------"
