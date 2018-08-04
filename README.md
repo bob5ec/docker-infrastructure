@@ -2,7 +2,7 @@
 
 [![Build Status Master](https://travis-ci.org/bob5ec/docker-infrastructure.svg?branch=master)](https://travis-ci.org/bob5ec/docker-infrastructure)
 
-This project provides a default infrastructure to host a dev, qa, prod docker envirounment on bare mettale.
+This project provides an infrastructure to host three environments dev, qa, prod. Each is running three Core OS machines with etcd and docker swarm. All this is installed on bare metal using Debian preseed.
 
 ### Install
 The installation of the full stack on a hardware host is started in three steps:
