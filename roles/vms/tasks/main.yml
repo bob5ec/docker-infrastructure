@@ -40,11 +40,10 @@
     --disk "path={{ env }}{{item}}.qcow2,format=qcow2,size=8,bus=virtio" \
     --disk "path={{ env }}-data.img,format=raw,bus=virtio" \
     --disk "path={{ env }}-data2.img,format=raw,bus=virtio" \
-    --vnc --noautoconsole \
     --network "bridge={{ env }}" \
     --graphics none \
     --console pty,target_type=serial \
-    --location 'ftp://ftp.de.debian.org/debian/dists/stretch/main/installer-amd64/' \
+    --location 'http://ftp.de.debian.org/debian/dists/stretch/main/installer-amd64/' \
     --extra-args 'console=ttyS0,115200n8 serial auto=true priority=critical preseed/url=https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/vm.preseed'
   args:
     chdir: /var/lib/libvirt/images/
