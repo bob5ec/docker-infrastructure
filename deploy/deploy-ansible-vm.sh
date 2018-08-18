@@ -3,13 +3,20 @@
 # get env and machine id from vm hostname
 NAME=$HOSTNAME
 #TEST
-#NAME=test1
+#NAME=master1
 
 [[ "$NAME" =~ ([A-Za-z]+)([0-9]*) ]]
 env=${BASH_REMATCH[1]}
 id=${BASH_REMATCH[2]}
 
-echo $env > /root/env
+#configure ansible
+rm /etc/ansible/hosts
+wget -O /etc/ansible/hosts https://raw.githubusercontent.com/bob5ec/docker-infrastructure/$env/deploy/ansible-hosts
+
+#run ansible-pull manually
+ansible-pull --extra-vars "env=$env" -U https://github.com/bob5ec/docker-infrastructure.git -C $env vm.yml
+
+######### old #############
 #get public key
 #mkdir -p /root/.ssh
 #chmod 700 /root/.ssh
