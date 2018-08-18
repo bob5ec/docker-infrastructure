@@ -43,8 +43,8 @@
     --network "bridge={{ env }}" \
     --graphics none \
     --console pty,target_type=serial \
-    --location 'http://ftp.de.debian.org/debian/dists/stretch/main/installer-amd64/' \
-    --extra-args 'console=ttyS0,115200n8 serial auto=true priority=critical preseed/url=https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/vm.preseed'
+    --location 'https://mirror.netcologne.de/debian/dists/stretch/main/installer-amd64/' \
+    --extra-args 'console=ttyS0,115200n8 serial auto=true priority=critical netcfg/hostname={{ env }}{{item}} preseed/url=https://raw.githubusercontent.com/bob5ec/docker-infrastructure/{{ env }}/deploy/vm.preseed'
   args:
     chdir: /var/lib/libvirt/images/
     creates: "/etc/libvirt/qemu/{{ env }}{{item}}.xml" |
