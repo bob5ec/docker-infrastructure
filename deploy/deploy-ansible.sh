@@ -1,5 +1,6 @@
 #!/bin/bash
 cd /etc
+#TODO set branch master when releaseing
 git clone https://github.com/bob5ec/docker-infrastructure.git
 rm /etc/ansible/hosts
 ln -s /etc/docker-infrastructure/deploy/ansible-hosts /etc/ansible/hosts
