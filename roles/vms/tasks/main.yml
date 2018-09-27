@@ -47,7 +47,7 @@
     --extra-args 'console=ttyS0,115200n8 serial auto=true priority=critical netcfg/hostname={{ env }}{{item}} preseed/url=https://raw.githubusercontent.com/bob5ec/docker-infrastructure/{{ env }}/deploy/vm.preseed'
   args:
     chdir: /var/lib/libvirt/images/
-    creates: "/etc/libvirt/qemu/{{ env }}{{item}}.xml" |
+    creates: "/etc/libvirt/qemu/{{ env }}{{item}}.xml"
   with_sequence: "count={{ vm_count }}"
 
 #TODO generate ssh_keys
