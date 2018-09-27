@@ -19,3 +19,6 @@ If you want to try the development version use change step 4 of the installation
 4. `preseed/url=https://raw.githubusercontent.com/bob5ec/docker-infrastructure/dev/deploy/hardware.preseed`
 
 We use [test-kitchen](https://github.com/test-kitchen/test-kitchen) to run tests that work within docker to test the setup before actual deployment. Sadly creating VMs requires a physical installation to test on.
+
+### Release instruction
+To release a new version go to `deploy/hardware.preseed` and `deploy/deploy-ansible.sh` search for TODO and set the branch to master
