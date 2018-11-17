@@ -1,5 +1,5 @@
 ---
-
+ 
 #TODO move basics to task that requires them
 - name: apply basic configuration to all nodes
   hosts: all
