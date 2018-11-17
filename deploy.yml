@@ -1,0 +1,8 @@
+---
+- name: apply basic configuration
+  hosts: all
+  remote_user: root
+
+  roles:
+    - { role: basics, env: "dev" , playbook: "hardware.yml" }
+

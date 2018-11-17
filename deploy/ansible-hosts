@@ -1,7 +1,0 @@
-[metal]
-localhost  ansible_connection=local
-
-[vms]
-dev
-qa
-prod

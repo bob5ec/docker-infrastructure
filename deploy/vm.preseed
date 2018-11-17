@@ -386,5 +386,5 @@ d-i finish-install/reboot_in_progress note
 
 d-i preseed/late_command string \
 in-target /bin/bash -c '[[ "$HOSTNAME" =~ ([A-Za-z]+)([0-9]*) ]] && echo ${BASH_REMATCH[1]} > /tmp/env' ; \
-in-target wget -O /tmp/deploy-ansible-vm.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/`cat /tmp/env`/deploy/deploy-ansible-vm.sh ; \
-in-target /bin/bash /tmp/deploy-ansible-vm.sh
+in-target wget -O /tmp/deploy-ansible-vm.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/`cat /tmp/env`/deploy/deploy-ansible.sh ; \
+in-target /bin/bash /tmp/deploy-ansible.sh `cat /tmp/env` vms
