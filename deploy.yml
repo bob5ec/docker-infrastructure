@@ -1,4 +1,8 @@
 ---
+- name: test for metal
+  hosts: metal
+  ping:
+
 - name: apply basic configuration
   hosts: all
   remote_user: root
