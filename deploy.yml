@@ -1,10 +1,7 @@
 ---
-- name: test for metal
-  hosts: metal
-  ping:
-
 - name: apply basic configuration
-  hosts: all
+  hosts: metal
+#  hosts: all
   remote_user: root
 
   roles:
