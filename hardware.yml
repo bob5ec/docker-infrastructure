@@ -1,7 +1,7 @@
 ---
 - include: default.yml
 
-- name: provision VMs with CoreOS container linux
+- name: provision dev VM
   hosts: metal
   remote_user: root
   vars:
@@ -11,5 +11,25 @@
       - prod
   roles:
     - { role: vms, env: "dev",   network: "192.168.3" }
+
+- name: provision qa VM
+  hosts: metal
+  remote_user: root
+  vars:
+    envs:
+      - dev
+      - qa
+      - prod
+  roles:
     - { role: vms, env: "qa" ,   network: "192.168.4" }
-    - { role: vms, env: "prod" , network: "192.168.5" }
+
+- name: provision prod VM
+  hosts: metal
+  remote_user: root
+  vars:
+    envs:
+      - dev
+      - qa
+      - prod
+  roles:
+    - { role: vms, env: "prod" ,   network: "192.168.4" }
