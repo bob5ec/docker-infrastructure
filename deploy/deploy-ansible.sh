@@ -21,7 +21,7 @@ echo "localhost  ansible_connection=local" >> /etc/ansible/hosts
 ansible-galaxy install -r /etc/docker-infrastructure/requirements.yml
 
 #run ansible-pull manually
-ansible-pull --extra-vars "env=$env, playbook=hardware" -U https://github.com/bob5ec/docker-infrastructure.git -C $env deploy.yml
+ansible-pull --extra-vars "env=$env playbook=hardware" -U https://github.com/bob5ec/docker-infrastructure.git -C $env deploy.yml
 
 #old
 #ansible-pull -U https://github.com/bob5ec/docker-infrastructure.git -C master default.yml
