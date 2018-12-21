@@ -3,6 +3,7 @@
 
 - name: provision dev VM
   hosts: metal
+  strategy: debug
   remote_user: root
   vars:
     envs:
@@ -12,8 +13,10 @@
   roles:
     - { role: vms, env: "dev",   network: "192.168.3" }
 
+#TODO variables from first run re used in second run of the task
 - name: provision qa VM
   hosts: metal
+  strategy: debug
   remote_user: root
   vars:
     envs:
@@ -21,7 +24,7 @@
       - qa
       - prod
   roles:
-    - { role: vms, env: "qa" ,   network: "192.168.4" }
+    - { role: vms, env: "qa",   network: "192.168.4" }
 
 - name: provision prod VM
   hosts: metal
@@ -32,4 +35,4 @@
       - qa
       - prod
   roles:
-    - { role: vms, env: "prod" ,   network: "192.168.4" }
+    - { role: vms, env: "prod",   network: "192.168.5" }
