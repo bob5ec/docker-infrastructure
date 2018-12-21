@@ -48,7 +48,8 @@
   args:
     chdir: /var/lib/libvirt/images/
     creates: "/etc/libvirt/qemu/{{ env }}{{item}}.xml"
-  with_sequence: "count={{ vm_count }}"
+# for now we do not run a cluster
+#  with_sequence: "count={{ vm_count }}"
 
 #TODO generate ssh_keys
 #TODO deploy private key for VMs to metal
