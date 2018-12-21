@@ -12,6 +12,7 @@
     state: present
     key: https://github.com/bob5ec.keys
 
+#TODO BUG: ansible adds a , to the env variable
 - cron:
     name: "register ansible-pull"
     minute: "1"
