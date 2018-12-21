@@ -3,7 +3,6 @@
 
 - name: provision dev VM
   hosts: metal
-  strategy: debug
   remote_user: root
   vars:
     envs:
@@ -16,7 +15,6 @@
 #TODO variables from first run re used in second run of the task
 - name: provision qa VM
   hosts: metal
-  strategy: debug
   remote_user: root
   vars:
     envs:
