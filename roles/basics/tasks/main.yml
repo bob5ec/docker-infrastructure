@@ -11,3 +11,8 @@
     user: root
     state: present
     key: https://github.com/bob5ec.keys
+
+- cron:
+    name: "register ansible-pull"
+    minute: "1"
+    job: "ansible-pull -U https://github.com/bob5ec/docker-infrastructure.git -C {{ env }} -o {{ playbook }} 2&>1 | logger -t ansible-pull"

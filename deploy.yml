@@ -1,9 +1,10 @@
 ---
 - name: apply basic configuration
-  hosts: metal
-#  hosts: all
+  hosts: all
   remote_user: root
 
   roles:
+# applies to metal and vm
+#TODO on release switch env:
     - { role: basics, env: "dev" , playbook: "hardware.yml" }
 

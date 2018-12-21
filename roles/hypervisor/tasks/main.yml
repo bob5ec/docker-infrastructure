@@ -26,7 +26,3 @@
     state: started
   #  enabled: yes
 
-- cron:
-    name: "register ansible-pull from branch master for the hardware playbook"
-    minute: "15"
-    job: "ansible-pull -U https://github.com/bob5ec/docker-infrastructure.git -C master -o hardware.yml 2&>1 | logger -t ansible-pull"
