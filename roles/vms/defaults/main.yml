@@ -1,6 +1,6 @@
 ---
 # defaults file for vms
-env: dev
+#env: dev
 # for now we do not run a cluster
 vm_count: 1
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-git pull && exit 1
+git pull
 #echo localhost > /tmp/ansible_hosts
 #ansible-playbook hardware.yml -i /tmp/ansible_hosts --connection=local
 env=dev
