@@ -2,7 +2,7 @@
 # defaults file for vms
 env: dev
 # for now we do not run a cluster
-#vm_count: 3
+vm_count: 1
 
 network: "192.168.3"
 node_role: manager
