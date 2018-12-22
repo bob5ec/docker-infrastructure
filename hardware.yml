@@ -12,8 +12,6 @@
   roles:
     - { role: vms, env: "dev",   network: "192.168.3" }
 
-#TODO variables from first run re used in second run of the task
-#extra arg env may be the cause. cron job is missing extra env. deploy/test.sh has it
 - name: provision qa VM
   hosts: metal
   remote_user: root
