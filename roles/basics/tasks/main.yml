@@ -15,4 +15,4 @@
 - cron:
     name: "register ansible-pull"
     minute: "1"
-    job: "ansible-pull -U https://github.com/bob5ec/docker-infrastructure.git -C {{ deploy_env }} -o {{ deploy_playbook }} 2&>1 | logger -t ansible-pull"
+    job: "ansible-pull --extra-vars \"deploy_env={{ deploy_env }} deploy_playbook={{ deploy_playbook }}\" -U https://github.com/bob5ec/docker-infrastructure.git -C {{ deploy_env }} {{ deploy_playbook }} 2&>1 | logger -t ansible-pull"
