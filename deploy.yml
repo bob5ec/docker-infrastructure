@@ -6,5 +6,5 @@
   roles:
 # applies to metal and vm
 #TODO on release switch env:
-    - { role: basics, env: "dev" , playbook: "hardware.yml" }
+    - { role: basics, deploy_env: "dev" , deploy_playbook: "hardware.yml" }
 
