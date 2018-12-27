@@ -384,7 +384,12 @@ d-i finish-install/reboot_in_progress note
 #d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
 #d-i preseed/late_command string in-target wget -q -O - https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/deploy-ansible.sh | /bin/bash
 
+# Fix Ansible bug when running in chroot
+#in-target mkdir /dev/shm ; \
+#in-target mount -t tmpfs -o size=50M tmpfs /dev/shm ; \
+
 d-i preseed/late_command string \
 in-target grep -Eo '([A-Za-z]+)' /etc/hostname > /tmp/env ; \
-in-target wget -O /tmp/deploy-ansible-vm.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/`cat /tmp/env`/deploy/deploy-ansible.sh ; \
-in-target /bin/sh /tmp/deploy-ansible.sh `cat /tmp/env` vms
+in-target /bin/bash -c "wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/`cat /tmp/env`/deploy/deploy-ansible.sh" ; \
+in-target /bin/bash -c "chmod +x /tmp/deploy-ansible.sh" ; \
+in-target /bin/bash -c "/tmp/deploy-ansible.sh `cat /tmp/env` vm"
