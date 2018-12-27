@@ -388,9 +388,8 @@ d-i finish-install/reboot_in_progress note
 #in-target mkdir /dev/shm ; \
 #in-target mount -t tmpfs -o size=50M tmpfs /dev/shm ; \
 
-#TODO a running debian in the vi is fine... next step it to put ansible on it
-#d-i preseed/late_command string \
-#in-target grep -Eo '([A-Za-z]+)' /etc/hostname > /tmp/env ; \
-#in-target /bin/bash -c "wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/`cat /tmp/env`/deploy/deploy-ansible.sh" ; \
-#in-target /bin/bash -c "chmod +x /tmp/deploy-ansible.sh" ; \
-#in-target /bin/bash -c "/tmp/deploy-ansible.sh `cat /tmp/env` vm"
+d-i preseed/late_command string \
+in-target grep -Eo '([A-Za-z]+)' /etc/hostname > /tmp/env ; \
+in-target /bin/bash -c "wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/`cat /tmp/env`/deploy/deploy-ansible.sh" ; \
+in-target /bin/bash -c "chmod +x /tmp/deploy-ansible.sh" ; \
+in-target /bin/bash -c "/tmp/deploy-ansible.sh `cat /tmp/env` vm"
