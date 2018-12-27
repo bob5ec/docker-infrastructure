@@ -385,6 +385,6 @@ d-i finish-install/reboot_in_progress note
 #d-i preseed/late_command string in-target wget -q -O - https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/deploy-ansible.sh | /bin/bash
 
 d-i preseed/late_command string \
-in-target grep -Eo '([A-Za-z]+)' /target/etc/hostname > /tmp/env ; \
+in-target grep -Eo '([A-Za-z]+)' /etc/hostname > /tmp/env ; \
 in-target wget -O /tmp/deploy-ansible-vm.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/`cat /tmp/env`/deploy/deploy-ansible.sh ; \
 in-target /bin/sh /tmp/deploy-ansible.sh `cat /tmp/env` vms
