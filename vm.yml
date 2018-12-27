@@ -1,7 +1,0 @@
----
-# tasks file for VMs in the different environments
-
-- cron:
-    name: "register ansible-pull from branch {{ env }} for the hardware playbook"
-    minute: "15"
-    job: "ansible-pull -U https://github.com/bob5ec/docker-infrastructure.git -C {{ env }} -o vm.yml 2&>1 | logger -t ansible-pull"

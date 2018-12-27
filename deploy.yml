@@ -1,5 +1,5 @@
 ---
-- name: apply basic configuration
+- name: apply only basic configuration
   hosts: all
   remote_user: root
 
