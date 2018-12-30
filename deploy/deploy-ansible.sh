@@ -23,6 +23,8 @@ ansible-galaxy install -r /etc/docker-infrastructure/requirements.yml
 #run ansible-pull manually
 ansible-pull --extra-vars "env=$env playbook=hardware" -U https://github.com/bob5ec/docker-infrastructure.git -C $env deploy.yml
 
+read -p "All done right? Press [Enter] continiue installation..."
+
 #old
 #ansible-pull -U https://github.com/bob5ec/docker-infrastructure.git -C master default.yml
 #ansible-pull -U https://github.com/bob5ec/docker-infrastructure.git -C master hardware.yml
