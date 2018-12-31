@@ -1,10 +1,12 @@
 ---
 # tasks file for basics
-- name: get networking scripts
+- name: get basic packages
   apt:
-#    name: netbase
-    name: ifupdown
-    state: present
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - ifupdown
+#    - apt-transport-https
 
 - name: Set authorized key from git user
   authorized_key:

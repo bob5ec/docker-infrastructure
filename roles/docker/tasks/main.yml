@@ -1,18 +1,18 @@
 ---
 # tasks file for docker
-- name: Set up Docker apt repository
-  copy:
-    src: "{{ role_path }}/files/docker.list"
-    dest: /etc/apt/sources.list.d/docker.list
-
-- name: Load packed list
+- name: get apt htts support
   apt:
-    update_cache: yes
-#    cache_valid_time: 3600
+    name: apt-transport-https
+
+- name: Set up Docker apt repository
+  apt_repository:
+    repo: deb https://apt.dockerproject.org/repo debian-strech main
+    state: present
 
 - name: Get docker-engine
   apt:
     name: docker-engine
+    update_cache: yes
     state: present
 
 - name: Deploy simple deployer
