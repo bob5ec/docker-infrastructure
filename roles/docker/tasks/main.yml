@@ -23,7 +23,7 @@
   copy:
     src: "{{ role_path }}/files/docker-deploy"
     dest: /usr/local/sbin/docker-deploy
-    mode: +x
+    mode: 0755
 
 - name: Register deployer in cron
   cron:
