@@ -1,0 +1,26 @@
+---
+# tasks file for docker
+- name: Set up Docker apt repository
+    copy:
+      src: "{{ role_path }}/files/docker.list"
+      dest: /etc/apt/sources.list.d/docker.list
+
+- name: Load packed list
+    apt:
+      update_cache: yes
+#      cache_valid_time: 3600
+
+- name: Get docker-engine
+    apt:
+      name: docker-engine
+      state: present
+
+- name: Deploy simple deployer
+    copy:
+      src: "{{ role_path }}/files/docker-deploy"
+      dst: /usr/local/sbin/docker-deploy
+
+- name: Register deployer in cron
+    cron:
+      minute: "33"
+      job: "/usr/local/sbin/docker-deploy"

@@ -89,3 +89,10 @@
           maxwait: 0
           fd: 0
 
+
+
+- name: set up docker
+  hosts: vm
+  remote_user: root
+  roles:
+    - docker
