@@ -11,15 +11,15 @@
 
 - name: Set up Docker apt repository
   apt_repository:
-          #    repo: deb https://apt.dockerproject.org/repo debian-stretch main
-    repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+    repo: deb [arch=amd64] https://apt.dockerproject.org/repo debian-stretch main
+          #    repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
     state: present
 
 - name: Get docker-engine
   apt:
-    name: docker-engine
+    name: docker-ce
     state: present
-    update_cache: yes
+    #    update_cache: yes
 
 - name: Deploy simple deployer
   copy:
