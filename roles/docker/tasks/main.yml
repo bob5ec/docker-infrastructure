@@ -4,6 +4,11 @@
   apt:
     name: apt-transport-https
 
+- name: Add docker package signing key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
 - name: Set up Docker apt repository
   apt_repository:
     repo: deb https://apt.dockerproject.org/repo debian-strech main
@@ -12,8 +17,8 @@
 - name: Get docker-engine
   apt:
     name: docker-engine
-    update_cache: yes
     state: present
+    #    update_cache: yes
 
 - name: Deploy simple deployer
   copy:
