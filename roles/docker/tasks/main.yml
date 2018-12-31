@@ -11,8 +11,8 @@
 
 - name: Set up Docker apt repository
   apt_repository:
-    repo: deb https://apt.dockerproject.org/repo debian-strech main
-          #repo: deb [arch=amd64] https://download.docker.com/linux/debian strech stable
+    repo: deb https://apt.dockerproject.org/repo debian-stretch main
+          #repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
     state: present
 
 - name: Get docker-engine
