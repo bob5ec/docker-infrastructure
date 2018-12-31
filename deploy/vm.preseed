@@ -388,8 +388,11 @@ d-i finish-install/reboot_in_progress note
 #in-target mkdir /dev/shm ; \
 #in-target mount -t tmpfs -o size=50M tmpfs /dev/shm ; \
 
+# debugging with: guestmount -a /var/lib/libvirt/images/dev1.qcow2 -m /dev/dev1-vg/root /tmp/0
+# grep inside of bash works
+# ` ` is not working
 d-i preseed/late_command string \
-in-target /bin/bash -c "grep -Eo '([A-Za-z]+)' /etc/hostname > /tmp/env" ; \
-in-target /bin/bash -c "wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/`cat /tmp/env`/deploy/deploy-ansible.sh" ; \
-in-target /bin/bash -c "chmod +x /tmp/deploy-ansible.sh" ; \
-in-target /bin/bash -c "/tmp/deploy-ansible.sh `cat /tmp/env` vm"
+in-target /bin/bash -c "echo -n 'export env=' > /tmp/env; grep -Eo '([A-Za-z]+)' /etc/hostname >> /tmp/env" ; \
+in-target /bin/bash -c "cat /tmp/env > /tmp/test-env" ; \
+in-target /bin/bash -c "echo `cat /tmp/env` > /tmp/test-env2" ; \
+in-target /bin/bash -c "source /tmp/env; wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/\$env/deploy/deploy-ansible.sh; chmod +x /tmp/deploy-ansible.sh; /tmp/deploy-ansible.sh \$env vm"
