@@ -18,7 +18,7 @@
   apt:
     name: docker-engine
     state: present
-    #    update_cache: yes
+    update_cache: yes
 
 - name: Deploy simple deployer
   copy:
