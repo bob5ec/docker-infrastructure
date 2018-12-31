@@ -18,12 +18,11 @@
   apt:
     name: docker-ce
     state: present
-    #    update_cache: yes
 
 - name: Deploy simple deployer
   copy:
     src: "{{ role_path }}/files/docker-deploy"
-    dst: /usr/local/sbin/docker-deploy
+    dest: /usr/local/sbin/docker-deploy
 
 - name: Register deployer in cron
   cron:
