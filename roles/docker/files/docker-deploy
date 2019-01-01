@@ -13,5 +13,6 @@ fi
 
 for compose in *.yml; do
 	#use every yml as compose file and project name
+	docker-compose -f $compose -p `basename $compose .yml` down
 	docker-compose -f $compose -p `basename $compose .yml` up -d
 done

@@ -42,6 +42,7 @@
     --disk "path={{ env }}-data2.img,format=raw,bus=virtio" \
     --network "bridge={{ env }}" \
     --graphics none \
+    --autostart \
     --console pty,target_type=serial \
     --location 'https://mirror.netcologne.de/debian/dists/stretch/main/installer-amd64/' \
     --extra-args 'console=ttyS0,115200n8 serial auto=true priority=critical netcfg/hostname={{ env }}{{item}} preseed/url=https://raw.githubusercontent.com/bob5ec/docker-infrastructure/{{ env }}/deploy/vm.preseed'
@@ -50,6 +51,3 @@
     creates: "/etc/libvirt/qemu/{{ env }}{{item}}.xml"
 # for now we do not run a cluster
   with_sequence: "count={{ vm_count }}"
-
-#TODO generate ssh_keys
-#TODO deploy private key for VMs to metal
