@@ -1,7 +1,7 @@
 #!/bin/bash
 env=`grep -Eo '([A-Za-z]+)' /etc/hostname`
 repo="https://github.com/bob5ec/running-docker-stack.git"
-target="/etc/running_docker_stack"
+target="~/.running_docker_stack"
 
 if [ ! -d "$target" ]; then
 	git clone -b $env $repo $target
@@ -12,5 +12,6 @@ else
 fi
 
 for compose in *.yml; do
-	docker stack deploy --compose-file $compose `basename $compose .yml`
+	#use every yml as compose file and project name
+	docker-compose -f $compose -p `basename $compose .yml` up -d
 done
