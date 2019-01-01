@@ -387,4 +387,4 @@ d-i finish-install/reboot_in_progress note
 d-i preseed/late_command string \
 #TODO set branch master when releaseing
 in-target wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/dev/deploy/deploy-ansible.sh ; \
-in-target /bin/bash /tmp/deploy-ansible.sh dev metal
+in-target /bin/bash /tmp/deploy-ansible.sh prod metal
