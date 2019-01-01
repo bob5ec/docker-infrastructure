@@ -1,7 +1,9 @@
 #!/bin/bash
 env=`grep -Eo '([A-Za-z]+)' /etc/hostname`
 repo="https://github.com/bob5ec/running-docker-stack.git"
-target="~/.running_docker_stack"
+target=".running_docker_stack"
+
+cd
 
 if [ ! -d "$target" ]; then
 	git clone -b $env $repo $target
