@@ -19,6 +19,12 @@
     name: docker-ce
     state: present
 
+- name: Deploy docker Compose
+  copy:
+    src: "{{ role_path }}/files/docker-compose"
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
+
 - name: Deploy simple deployer
   copy:
     src: "{{ role_path }}/files/docker-deploy"
