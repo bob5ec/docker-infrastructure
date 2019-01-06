@@ -393,6 +393,4 @@ d-i finish-install/reboot_in_progress note
 # ` ` is not working
 d-i preseed/late_command string \
 in-target /bin/bash -c "echo -n 'export env=' > /tmp/env; grep -Eo '([A-Za-z]+)' /etc/hostname >> /tmp/env" ; \
-in-target /bin/bash -c "cat /tmp/env > /tmp/test-env" ; \
-in-target /bin/bash -c "echo `cat /tmp/env` > /tmp/test-env2" ; \
 in-target /bin/bash -c "source /tmp/env; wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/\$env/deploy/deploy-ansible.sh; chmod +x /tmp/deploy-ansible.sh; /tmp/deploy-ansible.sh \$env vm"

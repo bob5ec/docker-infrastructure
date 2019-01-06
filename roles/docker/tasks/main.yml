@@ -1,6 +1,6 @@
 ---
 # tasks file for docker
-- name: get apt htts support
+- name: get apt https support
   apt:
     name: apt-transport-https
 

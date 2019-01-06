@@ -1,2 +1,4 @@
 ---
 # defaults file for basics
+deploy_env: "dev"
+deploy_playbook: "hardware.yml"
