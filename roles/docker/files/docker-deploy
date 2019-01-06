@@ -1,4 +1,5 @@
 #!/bin/bash
+#TODO use ansible facts to get the env
 env=`grep -Eo '([A-Za-z]+)' /etc/hostname`
 repo="https://github.com/bob5ec/running-docker-stack.git"
 target=".running_docker_stack"

@@ -13,4 +13,4 @@ echo "[$ansible_group]" > /etc/ansible/hosts
 echo "localhost  ansible_connection=local" >> /etc/ansible/hosts
 
 #run ansible-pull manually
-ansible-pull --extra-vars "deploy_env=$env deploy_playbook=hardware" -U https://github.com/bob5ec/docker-infrastructure.git -C $env deploy.yml
+ansible-pull --extra-vars "deploy_env=$env deploy_playbook=hardware.yml" -U https://github.com/bob5ec/docker-infrastructure.git -C $env deploy.yml
