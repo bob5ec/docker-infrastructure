@@ -37,6 +37,7 @@
     --ram 1024 --vcpus 1 \
     --os-type=linux \
     --os-variant=virtio26 \
+    --rng /dev/urandom \
     --disk "path={{ env }}{{item}}.qcow2,format=qcow2,size=8,bus=virtio" \
     --disk "path={{ env }}-data.img,format=raw,bus=virtio" \
     --disk "path={{ env }}-data2.img,format=raw,bus=virtio" \
