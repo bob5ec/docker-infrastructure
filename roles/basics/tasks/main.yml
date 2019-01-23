@@ -18,3 +18,23 @@
     name: "register ansible-pull"
     minute: "1"
     job: "ansible-pull --extra-vars \"deploy_env={{ deploy_env }} deploy_playbook={{ deploy_playbook }}\" -U https://github.com/bob5ec/docker-infrastructure.git -C {{ deploy_env }} {{ deploy_playbook }} 2&>1 | logger -t ansible-pull"
+
+- name: Get gpg
+  apt:
+    name: gnupg
+    state: present
+
+- name: Create gpg batch file
+    template: src=gpg-gen-key.batch.j2 dest=/var/local/gpg-gen-key.batch
+
+- name: Generate gpg key
+  shell: gpg --batch -gen-key gpg-gen-key.batch
+  args:
+    chdir: /var/local
+    #TODO make this idempotent: https://github.com/juju4/ansible-gpgkey_generate/blob/master/tasks/gpgkey_generate.yml
+
+- name: Get git-crypt
+  apt:
+    name: git-crypt
+    state: present
+
