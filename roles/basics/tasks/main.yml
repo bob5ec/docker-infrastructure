@@ -30,10 +30,17 @@
     dest: /var/local/gpg-gen-key.batch
 
 - name: Generate gpg key
-  shell: gpg --batch --gen-key gpg-gen-key.batch; 
+  shell: "gpg --batch --gen-key gpg-gen-key.batch; gpg -a --export {{ansible_hostname}} git-crypt > gpg.pub"
   args:
     chdir: /var/local
-    #TODO make this idempotent: https://github.com/juju4/ansible-gpgkey_generate/blob/master/tasks/gpgkey_generate.yml
+    creates: gpg.pub
+    #TODO make this idempotent and faster: https://github.com/juju4/ansible-gpgkey_generate/blob/master/tasks/gpgkey_generate.yml
+
+- name: Send gpg key to slack channel
+  slack:
+    token: T80JW9UF4/B80P60RA9/OQw5HPDV0FdN2ryDWNWXWM0s
+    msg: "{{ansible_hostname}}'s gpg key: {{ lookup('file', '/var/local/gpg.pub') }}"
+    channel: '#ops'
 
 - name: Get git-crypt
   apt:
