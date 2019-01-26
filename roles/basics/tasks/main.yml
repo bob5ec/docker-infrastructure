@@ -30,7 +30,7 @@
     dest: /var/local/gpg-gen-key.batch
 
 - name: Generate gpg key
-  shell: "gpg --batch --gen-key gpg-gen-key.batch; gpg -a --export {{ansible_hostname}} git-crypt > gpg.pub"
+  shell: "ping -f localhost & find / > /dev/null; gpg --batch --gen-key gpg-gen-key.batch; killall ping; gpg -a --export {{ansible_hostname}} git-crypt > gpg.pub"
   args:
     chdir: /var/local
     creates: gpg.pub
