@@ -25,10 +25,12 @@
     state: present
 
 - name: Create gpg batch file
-    template: src=gpg-gen-key.batch.j2 dest=/var/local/gpg-gen-key.batch
+  template:
+    src: gpg-gen-key.batch.j2
+    dest: /var/local/gpg-gen-key.batch
 
 - name: Generate gpg key
-  shell: gpg --batch -gen-key gpg-gen-key.batch
+  shell: gpg --batch -gen-key gpg-gen-key.batch; 
   args:
     chdir: /var/local
     #TODO make this idempotent: https://github.com/juju4/ansible-gpgkey_generate/blob/master/tasks/gpgkey_generate.yml
