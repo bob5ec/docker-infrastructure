@@ -24,17 +24,22 @@
     name: gnupg
     state: present
 
+- name: Get rngd
+  apt:
+    name: rng-tools
+    state: present
+
 - name: Create gpg batch file
   template:
     src: gpg-gen-key.batch.j2
     dest: /var/local/gpg-gen-key.batch
 
-- name: Generate gpg key
-  shell: "ping -f localhost & find / > /dev/null; gpg --batch --gen-key gpg-gen-key.batch; killall ping; gpg -a --export {{ansible_hostname}} git-crypt > gpg.pub"
+- name: Generate gpg key from bad entropy
+  shell: "rngd -r /dev/urandom; gpg --batch --gen-key gpg-gen-key.batch; killall rngd; gpg -a --export {{ansible_hostname}} git-crypt > gpg.pub"
   args:
     chdir: /var/local
     creates: gpg.pub
-    #TODO make this idempotent and faster: https://github.com/juju4/ansible-gpgkey_generate/blob/master/tasks/gpgkey_generate.yml
+    #/dev/random does not have enough entropy and the CPU TRNG is backdoord so I use /dev/urandom. Please don't throw rocks at me...
 
 - name: Send gpg key to slack channel
   slack:
