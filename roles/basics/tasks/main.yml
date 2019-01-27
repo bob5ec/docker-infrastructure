@@ -39,7 +39,7 @@
   args:
     chdir: /var/local
     creates: gpg.pub
-  register: gpg-pub
+  register: gpgpub
     #/dev/random does not have enough entropy and the CPU TRNG is backdoord so I use /dev/urandom. Please don't throw rocks at me...
 
 - name: Send gpg key to slack channel
@@ -47,7 +47,7 @@
     token: T80JW9UF4/B80P60RA9/OQw5HPDV0FdN2ryDWNWXWM0s
     msg: "{{ansible_hostname}}'s gpg key: {{ lookup('file', '/var/local/gpg.pub') }}"
     channel: '#ops'
-  when: gpg-pub.changed
+  when: gpgpub.changed
 
 - name: Get git-crypt
   apt:
