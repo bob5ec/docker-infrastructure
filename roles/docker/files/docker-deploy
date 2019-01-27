@@ -20,4 +20,5 @@ for compose in *.yml; do
 	docker-compose -f $compose -p `basename $compose .yml` down
 	docker-compose -f $compose -p `basename $compose .yml` up -d
 done
-git-crypt lock
+#TODO improve secrets security, e.g. copy them into the container
+#git-crypt lock
