@@ -2,14 +2,12 @@
 # tasks file for vms-guest
 - name: /data
   mount:
-    path: /data
     src: /dev/vdb
     fstype: ext4
     state: present
 
 - name: /data2
   mount:
-    path: /data2
     src: /dev/vdc
     fstype: ext4
     state: present
