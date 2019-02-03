@@ -1,15 +1,26 @@
 ---
 # tasks file for vms-guest
+
+- name: Create mountpoint
+  file:
+    path: /data
+    state: directory
+
 - name: /data
   mount:
     name: /data
     src: /dev/vdb
     fstype: ext4
-    state: present
+    state: mounted
+
+- name: Create mountpoint
+  file:
+    path: /data2
+    state: directory
 
 - name: /data2
   mount:
     name: /data2
     src: /dev/vdc
     fstype: ext4
-    state: present
+    state: mounted
