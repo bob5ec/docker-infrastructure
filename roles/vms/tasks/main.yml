@@ -9,14 +9,28 @@
 
 - name: Create data disks for nonprod
   shell: dd if=/dev/zero "of={{ env }}-data.img" count=10000; \
-    mkfs.ext4 "{{ env }}-data.img"; \
+    mkfs.ext3 "{{ env }}-data.img"; \
     dd if=/dev/zero "of={{ env }}-data2.img" count=10000; \
     mkfs.ext4 "{{ env }}-data2.img"
   args:
     chdir: /var/lib/libvirt/images/
     creates: "{{ env }}-data2.img"
 #TODO attach real disks
-#  when: not env == "prod"
+  when: env != "prod"
+
+- name: Link prod data disk
+  file:
+    src: /var/lib/libvirt/images/prod-data.img
+    dest: /dev/mapper/data-niobe
+    state: link
+  when: env == "prod"
+
+- name: Link prod data2 disk
+  file:
+    src: /var/lib/libvirt/images/prod-data2.img
+    dest: /dev/mapper/data-data2
+    state: link
+  when: env == "prod"
 #
 #- name: Create data disks for prod
 #  shell: "ln -s /dev/sdb {{ env }}-data.img && ln -s /dev/sdc {{ env }}-data2.img"
@@ -25,6 +39,24 @@
 #    creates: "{{ env }}-data2.img"
 #  when: env == "prod"
 
+    #- name: mount data disk
+    #  mount:
+    #    name: /tmp/newdisk_data
+    #    src: "/var/lib/libvirt/images/{{ env }}-data.img"
+    #    fstype: ext4
+    #    state: mounted
+
+    #- name: create home
+    #  file:
+    #    path: /tmp/newdisk_data/home
+    #    state: directory
+
+    #- name: unmount data disk
+    #  mount:
+    #    name: /tmp/newdisk_data
+    #    src: "/var/lib/libvirt/images/{{ env }}-data.img"
+    #    fstype: ext4
+    #    state: absent
 
 - name: create VM
 # this step creates a temp file as well...

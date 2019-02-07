@@ -10,7 +10,7 @@
   mount:
     name: /data
     src: /dev/vdb
-    fstype: ext4
+    fstype: ext3
     state: mounted
 
 - name: Create mountpoint
