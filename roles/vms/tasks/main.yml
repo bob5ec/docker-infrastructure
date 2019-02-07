@@ -20,15 +20,15 @@
 
 - name: Link prod data disk
   file:
-    src: /var/lib/libvirt/images/prod-data.img
-    dest: /dev/mapper/data-niobe
+    src: /dev/mapper/data-niobe
+    dest: /var/lib/libvirt/images/prod-data.img
     state: link
   when: env == "prod"
 
 - name: Link prod data2 disk
   file:
-    src: /var/lib/libvirt/images/prod-data2.img
-    dest: /dev/mapper/data-data2
+    src: /dev/mapper/data-data2
+    dest: /var/lib/libvirt/images/prod-data2.img
     state: link
   when: env == "prod"
 #
