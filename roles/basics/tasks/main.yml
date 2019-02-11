@@ -18,3 +18,39 @@
     name: "register ansible-pull"
     minute: "1"
     job: "ansible-pull --extra-vars \"deploy_env={{ deploy_env }} deploy_playbook={{ deploy_playbook }}\" -U https://github.com/bob5ec/docker-infrastructure.git -C {{ deploy_env }} {{ deploy_playbook }} 2&>1 | logger -t ansible-pull"
+
+- name: Get gpg
+  apt:
+    name: gnupg
+    state: present
+
+- name: Get rngd
+  apt:
+    name: rng-tools
+    state: present
+
+- name: Create gpg batch file
+  template:
+    src: gpg-gen-key.batch.j2
+    dest: /var/local/gpg-gen-key.batch
+
+- name: Generate gpg key from bad entropy
+  shell: "rngd -r /dev/urandom; gpg --batch --gen-key gpg-gen-key.batch; killall rngd; gpg -a --export {{ansible_hostname}} git-crypt > gpg.pub"
+  args:
+    chdir: /var/local
+    creates: gpg.pub
+  register: gpgpub
+    #/dev/random does not have enough entropy and the CPU TRNG is backdoord so I use /dev/urandom. Please don't throw rocks at me...
+
+- name: Send gpg key to slack channel
+  slack:
+    token: T80JW9UF4/B80P60RA9/OQw5HPDV0FdN2ryDWNWXWM0s
+    msg: "{{ansible_hostname}}'s gpg key: {{ lookup('file', '/var/local/gpg.pub') }}"
+    channel: '#ops'
+  when: gpgpub.changed
+
+- name: Get git-crypt
+  apt:
+    name: git-crypt
+    state: present
+
