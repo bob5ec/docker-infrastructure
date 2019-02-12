@@ -6,28 +6,10 @@
   vars:
     packages:
     - ifupdown
+    - gnupg
+    - rng-tools
+    - git-crypt
 #    - apt-transport-https
-
-- name: Set authorized key from git user
-  authorized_key:
-    user: root
-    state: present
-    key: https://github.com/bob5ec.keys
-
-- cron:
-    name: "register ansible-pull"
-    minute: "1"
-    job: "ansible-pull --extra-vars \"deploy_env={{ deploy_env }} deploy_playbook={{ deploy_playbook }}\" -U https://github.com/bob5ec/docker-infrastructure.git -C {{ deploy_env }} {{ deploy_playbook }} 2&>1 | logger -t ansible-pull"
-
-- name: Get gpg
-  apt:
-    name: gnupg
-    state: present
-
-- name: Get rngd
-  apt:
-    name: rng-tools
-    state: present
 
 - name: Create gpg batch file
   template:
@@ -48,9 +30,4 @@
     msg: "{{ansible_hostname}}'s gpg key: {{ lookup('file', '/var/local/gpg.pub') }}"
     channel: '#ops'
   when: gpgpub.changed
-
-- name: Get git-crypt
-  apt:
-    name: git-crypt
-    state: present
 
