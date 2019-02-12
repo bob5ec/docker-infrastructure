@@ -385,5 +385,5 @@ d-i finish-install/reboot_in_progress note
 #d-i preseed/late_command string in-target wget -q -O - https://raw.githubusercontent.com/bob5ec/docker-infrastructure/master/deploy/deploy-ansible.sh | /bin/bash
 
 d-i preseed/late_command string \
-in-target wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/prod/deploy/deploy-ansible.sh ; \
-in-target /bin/bash /tmp/deploy-ansible.sh prod metal
+in-target wget -O /tmp/deploy-ansible.sh https://raw.githubusercontent.com/bob5ec/docker-infrastructure/qa/deploy/deploy-ansible.sh ; \
+in-target /bin/bash /tmp/deploy-ansible.sh qa metal
