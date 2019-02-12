@@ -1,0 +1,4 @@
+---
+# defaults file for deploy
+deploy_env: "dev"
+deploy_playbook: "hardware.yml"
