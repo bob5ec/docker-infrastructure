@@ -1,0 +1,12 @@
+---
+# tasks file for deploy
+- name: Set authorized key from git user
+  authorized_key:
+    user: root
+    state: present
+    key: https://github.com/bob5ec.keys
+
+- cron:
+    name: "register ansible-pull"
+    minute: "1"
+    job: "ansible-pull --extra-vars \"deploy_env={{ deploy_env }} deploy_playbook={{ deploy_playbook }}\" -U https://github.com/bob5ec/docker-infrastructure.git -C {{ deploy_env }} {{ deploy_playbook }} 2&>1 | logger -t ansible-pull"

@@ -4,8 +4,5 @@
   remote_user: root
 
   roles:
-#TODO #11 env was hardcoded to dev
-# applies to metal and vm
-#TODO change to extra args variables:
-    - basics
+    - deploy
 
