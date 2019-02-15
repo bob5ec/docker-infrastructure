@@ -27,7 +27,7 @@
 
 - name: Link prod data2 disk
   file:
-    src: /dev/mapper/data-data2
+    src: /dev/mapper/data2-data2
     dest: /var/lib/libvirt/images/prod-data2.img
     state: link
   when: env == "prod"
