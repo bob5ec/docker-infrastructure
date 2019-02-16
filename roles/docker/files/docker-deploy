@@ -5,21 +5,27 @@ repo="https://github.com/bob5ec/running-docker-stack.git"
 target=".running_docker_stack"
 
 cd
-
+CHANGED_REPO=0
 if [ ! -d "$target" ]; then
 	git clone -b $env $repo $target
 	cd $target
+	CHANGED_REPO=1
 else
 	cd $target
-	git pull
+	git pull |grep "Already up-to-date"
+	CHANGED_REPO=$?
 fi
 
 git-crypt unlock || exit 1
 for compose in *.yml; do
 	#use every yml as compose file and project name
-	docker-compose -f $compose -p `basename $compose .yml` down
+	BEFORE=`docker images`
 	docker-compose -f $compose -p `basename $compose .yml` pull
-	docker-compose -f $compose -p `basename $compose .yml` up -d
+	AFTER=`docker images`
+	if [ "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1"]; then
+		docker-compose -f $compose -p `basename $compose .yml` down
+		docker-compose -f $compose -p `basename $compose .yml` up -d
+	fi
 done
 #TODO improve secrets security, e.g. copy them into the container
 #git-crypt lock
