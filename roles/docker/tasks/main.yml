@@ -34,6 +34,6 @@
 - name: Register deployer in cron
   cron:
     name: "docker-deploy"
-    minute: "32"
+    minute: "33"
     job: "/usr/local/sbin/docker-deploy"
   notify: docker redeploy
