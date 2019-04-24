@@ -1,13 +1,12 @@
 ---
 # tasks file for basics
-- name: upgrade all packages and clean up the cache once a day
+- name: update packages once a day
   apt:
     update_cache: yes
     cache_valid_time: 86000
-    upgrade: safe
-    autoclean: yes
 
-- name: get basic packages
+
+- name: install basic packages
   apt:
     name: "{{ packages }}"
   vars:
@@ -16,7 +15,13 @@
     - gnupg
     - rng-tools
     - git-crypt
+    - aptitude
 #    - apt-transport-https
+
+- name: upgrade all packages and clean up the cache
+  apt:
+    upgrade: safe
+    autoclean: yes
 
 - name: Create gpg batch file
   template:
