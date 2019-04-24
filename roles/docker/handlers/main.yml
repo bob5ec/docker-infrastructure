@@ -1,2 +1,5 @@
 ---
 # handlers file for docker
+handlers:
+  - name: docker redeploy
+    shell: "/usr/local/sbin/docker-deploy"

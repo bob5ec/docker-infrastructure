@@ -22,6 +22,7 @@
   apt:
     upgrade: safe
     autoclean: yes
+  notify: docker redeploy
 
 - name: Create gpg batch file
   template:
