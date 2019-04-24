@@ -1,5 +1,12 @@
 ---
 # tasks file for basics
+- name: upgrade all packages and clean up the cache once a day
+  apt:
+    update_cache: yes
+    cache_valid_time: 86000
+    upgrade: safe
+    autoclean: yes
+
 - name: get basic packages
   apt:
     name: "{{ packages }}"
