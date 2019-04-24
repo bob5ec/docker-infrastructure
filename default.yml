@@ -7,6 +7,8 @@
 
   roles:
     - basics
+  handlers:
+    - include: roles/docker/handlers/main.yml
 
 - name: configure and deploy libvirt
   hosts: metal
