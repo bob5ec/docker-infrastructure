@@ -45,7 +45,6 @@
       network_manage_devices: yes
 
       network_interfaces:
-#TODO test
       - device: enp0s31f6
         description: physical NIC
         auto: true
@@ -63,11 +62,11 @@
       - device: vlan5
         method: static
         address: 192.168.5.2
-        gateway: 192.168.5.1
+        # default gateway is provided by DHCP on enp0s31f6 interface
+        #        gateway: 192.168.5.1
         netmask: 24
         vlan:
           raw-device: enp0s31f6
-#TODO test
         #networks to attach VMs
       - device: dev
         method: manual
