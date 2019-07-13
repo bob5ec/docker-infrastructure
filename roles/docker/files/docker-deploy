@@ -16,13 +16,16 @@ else
 	CHANGED_REPO=$?
 fi
 
+# first line is chaty docker
+RUNNING_IMAGES=`docker ps|wc -l`
+
 git-crypt unlock || exit 1
 for compose in *.yml; do
 	#use every yml as compose file and project name
 	BEFORE=`docker images`
 	docker-compose -f $compose -p `basename $compose .yml` pull
 	AFTER=`docker images`
-	if [ "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
+	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
 		docker-compose -f $compose -p `basename $compose .yml` down
 		docker-compose -f $compose -p `basename $compose .yml` up -d
 	fi
