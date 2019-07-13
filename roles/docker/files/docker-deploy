@@ -25,7 +25,7 @@ for compose in *.yml; do
 	BEFORE=`docker images`
 	docker-compose -f $compose -p `basename $compose .yml` pull
 	AFTER=`docker images`
-	if [ "$RUNNING_IMAGES" == "1" "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
+	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
 		docker-compose -f $compose -p `basename $compose .yml` down
 		docker-compose -f $compose -p `basename $compose .yml` up -d
 	fi
