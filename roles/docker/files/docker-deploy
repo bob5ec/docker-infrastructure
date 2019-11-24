@@ -1,13 +1,13 @@
 #!/bin/bash
 #TODO use ansible facts to get the env
-env=`grep -Eo '([A-Za-z]+)' /etc/hostname`
+export ENV=`grep -Eo '([A-Za-z]+)' /etc/hostname`
 repo="https://github.com/bob5ec/running-docker-stack.git"
 target=".running_docker_stack"
 
 cd
 CHANGED_REPO=0
 if [ ! -d "$target" ]; then
-	git clone -b $env $repo $target
+	git clone -b $ENV $repo $target
 	cd $target
 	CHANGED_REPO=1
 else
