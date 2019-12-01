@@ -4,6 +4,7 @@
   authorized_key:
     user: root
     state: present
+    exclusive: true
     key: https://github.com/bob5ec.keys
 
 - cron:

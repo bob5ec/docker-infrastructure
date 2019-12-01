@@ -4,8 +4,8 @@
 - name: apply basic configuration to all nodes
   hosts: all
   remote_user: root
-
   roles:
+    - deploy
     - basics
   handlers:
     - include: roles/docker/handlers/main.yml
@@ -13,7 +13,6 @@
 - name: configure and deploy libvirt
   hosts: metal
   remote_user: root
-
   roles:
     - hypervisor
 
