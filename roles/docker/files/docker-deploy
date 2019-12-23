@@ -6,16 +6,17 @@ target=".running_docker_stack"
 
 cd
 
-if [ ! "$ENV" == "prod" -a ! "$1" == "-d" ]; then
-	echo "Run docker-deploy -d to deploy in non-prod."
-	exit 0
-fi
-
 if [ "$1" == "down" ]; then
+	cd $target
 	for compose in *.yml; do
 		#use every yml as compose file and project name
 		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
 	done
+	exit 0
+fi
+
+if [ ! "$ENV" == "prod" -a ! "$1" == "-d" ]; then
+	echo "Run docker-deploy -d to deploy in non-prod."
 	exit 0
 fi
 
