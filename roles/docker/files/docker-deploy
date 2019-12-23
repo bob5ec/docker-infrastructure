@@ -4,6 +4,11 @@ export ENV=`grep -Eo '([A-Za-z]+)' /etc/hostname`
 repo="https://github.com/bob5ec/running-docker-stack.git"
 target=".running_docker_stack"
 
+if [ ! "$ENV" == "prod" -a ! "$1" == "-d" ]; then
+	echo "Run docker-deploy -d to deploy in non-prod."
+	exit 0
+fi
+
 cd
 CHANGED_REPO=0
 if [ ! -d "$target" ]; then
