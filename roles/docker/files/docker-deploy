@@ -5,6 +5,21 @@ repo="https://github.com/bob5ec/running-docker-stack.git"
 target=".running_docker_stack"
 
 cd
+
+if [ "$1" == "down" ]; then
+	cd $target
+	for compose in *.yml; do
+		#use every yml as compose file and project name
+		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
+	done
+	exit 0
+fi
+
+if [ ! "$ENV" == "prod" -a ! "$1" == "-d" ]; then
+	echo "Run docker-deploy -d to deploy in non-prod."
+	exit 0
+fi
+
 CHANGED_REPO=0
 if [ ! -d "$target" ]; then
 	git clone -b $ENV $repo $target
@@ -23,11 +38,11 @@ git-crypt unlock || exit 1
 for compose in *.yml; do
 	#use every yml as compose file and project name
 	BEFORE=`docker images`
-	docker-compose -f $compose -p `basename $compose .yml` pull
+	/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` pull
 	AFTER=`docker images`
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
-		docker-compose -f $compose -p `basename $compose .yml` down
-		docker-compose -f $compose -p `basename $compose .yml` up -d
+		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
+		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` up -d
 	fi
 done
 #TODO improve secrets security, e.g. copy them into the container
