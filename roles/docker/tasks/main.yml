@@ -35,5 +35,5 @@
   cron:
     name: "docker-deploy"
     minute: "33"
-    job: "/usr/local/sbin/docker-deploy"
+    job: "/usr/local/sbin/docker-deploy 2>&1 | /usr/bin/logger -t docker-deploy"
   notify: docker redeploy
