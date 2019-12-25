@@ -9,6 +9,10 @@ cd
 if [ "$1" == "down" ]; then
 	cd $target
 	for compose in *.yml; do
+		# TODO side effect: variables are present for all compose files althogh just defined for one
+		if [ -f $compose/secrets/compose ]; then
+			source $compose/secrets/compose
+		fi
 		#use every yml as compose file and project name
 		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
 	done
