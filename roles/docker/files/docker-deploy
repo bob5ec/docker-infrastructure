@@ -4,35 +4,36 @@ export ENV=`grep -Eo '([A-Za-z]+)' /etc/hostname`
 repo="https://github.com/bob5ec/running-docker-stack.git"
 target=".running_docker_stack"
 
-cd
-
 if [ "$1" == "down" ]; then
+	cd
 	cd $target
 	for compose in *.yml; do
-		# TODO side effect: variables are present for all compose files althogh just defined for one
-		if [ -f $compose/secrets/compose ]; then
-			source $compose/secrets/compose
-		fi
 		#use every yml as compose file and project name
 		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
 	done
 	exit 0
 fi
 
-if [ ! "$ENV" == "prod" -a ! "$1" == "-d" ]; then
+if [ ! "$ENV" == "prod" -a ! "$1" == "-d" -a ! "$1" == "-l" ]; then
 	echo "Run docker-deploy -d to deploy in non-prod."
 	exit 0
 fi
 
 CHANGED_REPO=0
-if [ ! -d "$target" ]; then
-	git clone -b $ENV $repo $target
-	cd $target
+if [ "$1" == "-l" ]; then
+	#running docker-deploy local in the current directory
 	CHANGED_REPO=1
 else
-	cd $target
-	git pull |grep "Already up-to-date"
-	CHANGED_REPO=$?
+	cd
+	if [ ! -d "$target" ]; then
+		git clone -b $ENV $repo $target
+		cd $target
+		CHANGED_REPO=1
+	else
+		cd $target
+		git pull |grep "Already up-to-date"
+		CHANGED_REPO=$?
+	fi
 fi
 
 # first line is chaty docker
@@ -45,6 +46,10 @@ for compose in *.yml; do
 	/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` pull
 	AFTER=`docker images`
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
+		# TODO side effect: variables are present for all compose files althogh just defined for one
+		if [ -f $compose/secrets/compose ]; then
+			source $compose/secrets/compose
+		fi
 		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
 		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` up -d
 	fi
