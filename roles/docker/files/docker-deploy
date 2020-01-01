@@ -37,12 +37,12 @@ else
 		git pull |grep "Already up-to-date"
 		CHANGED_REPO=$?
 	fi
+	git-crypt unlock || exit 1
 fi
 
 # first line is chaty docker
 RUNNING_IMAGES=`docker ps|wc -l`
 
-git-crypt unlock || exit 1
 for compose in *.yml; do
 	#use every yml as compose file and project name
 	compose_base=`basename $compose .yml`
