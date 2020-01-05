@@ -11,7 +11,7 @@ if [ "$1" == "down" ]; then
 	fi
 	for compose in *.yml; do
 		#use every yml as compose file and project name
-		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
+		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down -v
 	done
 	exit 0
 fi
@@ -56,7 +56,7 @@ for compose in *.yml; do
 
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
 		# TODO side effect: variables are present for all compose files althogh just defined for one
-		/usr/local/bin/docker-compose -f $compose -p $compose_base down
+		/usr/local/bin/docker-compose -f $compose -p $compose_base down -v
 		/usr/local/bin/docker-compose -f $compose -p $compose_base up -d
 	fi
 done
