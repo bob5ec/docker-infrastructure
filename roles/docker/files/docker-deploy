@@ -11,7 +11,11 @@ if [ "$1" == "down" ]; then
 	fi
 	for compose in *.yml; do
 		#use every yml as compose file and project name
-		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down -v
+		base=""
+		if [ -n $3 ]; then
+			base="-f $3"
+		fi
+		/usr/local/bin/docker-compose $base -f $compose -p `basename $compose .yml` down -v
 	done
 	exit 0
 fi
@@ -46,18 +50,24 @@ RUNNING_IMAGES=`docker ps|wc -l`
 for compose in *.yml; do
 	#use every yml as compose file and project name
 	compose_base=`basename $compose .yml`
+	base=""
+	if [ -n "$2" ]; then
+		base="-f $2"
+	fi
+	
 	if [ -f "$compose_base/secrets/compose" ]; then
 		source $compose_base/secrets/compose
 	fi
 
 	BEFORE=`docker images`
-	/usr/local/bin/docker-compose -f $compose -p $compose_base pull
+	echo "base: $base"
+	/usr/local/bin/docker-compose $base -f $compose -p $compose_base pull
 	AFTER=`docker images`
 
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
 		# TODO side effect: variables are present for all compose files althogh just defined for one
-		/usr/local/bin/docker-compose -f $compose -p $compose_base down -v
-		/usr/local/bin/docker-compose -f $compose -p $compose_base up -d
+		/usr/local/bin/docker-compose $base -f $compose -p $compose_base down -v
+		/usr/local/bin/docker-compose $base -f $compose -p $compose_base up -d
 	fi
 done
 #TODO improve secrets security, e.g. copy them into the container
