@@ -4,45 +4,60 @@ export ENV=`grep -Eo '([A-Za-z]+)' /etc/hostname`
 repo="https://github.com/bob5ec/running-docker-stack.git"
 target=".running_docker_stack"
 
-cd
-
 if [ "$1" == "down" ]; then
-	cd $target
+	if [ ! "$2" == "-l" ]; then
+		cd
+		cd $target
+	fi
 	for compose in *.yml; do
 		#use every yml as compose file and project name
-		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
+		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down -v
 	done
 	exit 0
 fi
 
-if [ ! "$ENV" == "prod" -a ! "$1" == "-d" ]; then
-	echo "Run docker-deploy -d to deploy in non-prod."
+if [ ! "$ENV" == "prod" -a ! "$1" == "-d" -a ! "$1" == "-l" ]; then
+	echo "Run docker-deploy -d to deploy in non-prod or -l to deploy the current git branch."
 	exit 0
 fi
 
 CHANGED_REPO=0
-if [ ! -d "$target" ]; then
-	git clone -b $ENV $repo $target
-	cd $target
+if [ "$1" == "-l" ]; then
+	#running docker-deploy local in the current directory
 	CHANGED_REPO=1
+	ENV=`git rev-parse --abbrev-ref HEAD`
 else
-	cd $target
-	git pull |grep "Already up-to-date"
-	CHANGED_REPO=$?
+	cd
+	if [ ! -d "$target" ]; then
+		git clone -b $ENV $repo $target
+		cd $target
+		CHANGED_REPO=1
+	else
+		cd $target
+		git pull |grep "Already up-to-date"
+		CHANGED_REPO=$?
+	fi
+	git-crypt unlock || exit 1
 fi
 
 # first line is chaty docker
 RUNNING_IMAGES=`docker ps|wc -l`
 
-git-crypt unlock || exit 1
 for compose in *.yml; do
 	#use every yml as compose file and project name
+	compose_base=`basename $compose .yml`
+	if [ -f "$compose_base/secrets/compose" ]; then
+		source $compose_base/secrets/compose
+	fi
+
 	BEFORE=`docker images`
-	/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` pull
+	/usr/local/bin/docker-compose -f $compose -p $compose_base pull
 	AFTER=`docker images`
+
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
-		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` down
-		/usr/local/bin/docker-compose -f $compose -p `basename $compose .yml` up -d
+		# TODO side effect: variables are present for all compose files althogh just defined for one
+		/usr/local/bin/docker-compose -f $compose -p $compose_base down -v
+		/usr/local/bin/docker-compose -f $compose -p $compose_base up -d
 	fi
 done
 #TODO improve secrets security, e.g. copy them into the container
