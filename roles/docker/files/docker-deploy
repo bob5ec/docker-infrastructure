@@ -34,7 +34,9 @@ CHANGED_REPO=0
 if [ "$1" == "-l" ]; then
 	#running docker-deploy local in the current directory
 	CHANGED_REPO=1
-	ENV=`git rev-parse --abbrev-ref HEAD`
+	if [ ! -z "$ENV" ]; then
+		export ENV=`git rev-parse --abbrev-ref HEAD`
+	fi
 else
 	cd
 	if [ ! -d "$target" ]; then
