@@ -80,9 +80,9 @@ for compose in *.yml; do
 	fi
 
 	BEFORE=`docker images`
-	if [ ! "$1" == "-l" ]; then
-		/usr/local/bin/docker-compose $base -f $compose -p $compose_base pull
-	fi
+#	if [ ! "$1" == "-l" ]; then
+	/usr/local/bin/docker-compose $base -f $compose -p $compose_base pull
+#	fi
 	AFTER=`docker images`
 
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
