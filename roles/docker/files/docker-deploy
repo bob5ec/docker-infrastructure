@@ -66,8 +66,23 @@ for compose in *.yml; do
 		source $compose_base/secrets/compose
 	fi
 
+	if [ -f "$compose_base/volumes" ]; then
+		#create all volumes in that file...
+		while IFS= read -r line
+		do
+			# ... if they do not exist
+			inspect=$((docker volume inspect $line) 2>&1)
+			if [[ $inspect =~ "Error: No such volume" ]]; then
+				echo -n "creating volume "
+				docker volume create "$line"
+			fi
+		done < $compose_base/volumes
+	fi
+
 	BEFORE=`docker images`
-	/usr/local/bin/docker-compose $base -f $compose -p $compose_base pull
+	if [ ! "$1" == "-l" ]; then
+		/usr/local/bin/docker-compose $base -f $compose -p $compose_base pull
+	fi
 	AFTER=`docker images`
 
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
