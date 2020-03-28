@@ -66,11 +66,11 @@
   shell: virt-install \
     --connect qemu:///system \
     --name "{{ env }}{{item}}" \
-    --ram 1024 --vcpus 1 \
+    --ram "{{ vm_ram_size }}" --vcpus "{{ vm_vcpus }}" \
     --os-type=linux \
     --os-variant=virtio26 \
     --rng /dev/urandom \
-    --disk "path={{ env }}{{item}}.qcow2,format=qcow2,size=8,bus=virtio" \
+    --disk "path={{ env }}{{item}}.qcow2,format=qcow2,size={{vm_disk_size}},bus=virtio" \
     --disk "path={{ env }}-data.img,format=raw,bus=virtio" \
     --disk "path={{ env }}-data2.img,format=raw,bus=virtio" \
     --network "bridge={{ env }}" \
