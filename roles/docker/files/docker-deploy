@@ -20,7 +20,7 @@ if [ "$1" == "down" ]; then
 		if [ -n $3 ]; then
 			base="-f $3"
 		fi
-		/usr/local/bin/docker-compose $base -f $compose -p $compose_base down -v
+		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base down -v
 	done
 	exit 0
 fi
@@ -80,15 +80,15 @@ for compose in *.yml; do
 	fi
 
 	BEFORE=`docker images`
-#	if [ ! "$1" == "-l" ]; then
-	/usr/local/bin/docker-compose $base -f $compose -p $compose_base pull
-#	fi
+	if [ ! "$1" == "-l" ]; then
+		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base pull
+	fi
 	AFTER=`docker images`
 
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
 		# TODO side effect: variables are present for all compose files althogh just defined for one
-		/usr/local/bin/docker-compose $base -f $compose -p $compose_base down -v
-		/usr/local/bin/docker-compose $base -f $compose -p $compose_base up -d
+		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base down -v
+		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base up -d
 	fi
 done
 #TODO improve secrets security, e.g. copy them into the container
