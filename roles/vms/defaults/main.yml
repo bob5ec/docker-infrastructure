@@ -3,6 +3,9 @@
 #env: dev
 # for now we do not run a cluster
 vm_count: 1
+vm_vcpus: 4
+vm_ram_size: 1024
+vm_disk_size: 64
 
 network: "192.168.3"
 node_role: manager

@@ -32,4 +32,4 @@
       - qa
       - prod
   roles:
-    - { role: vms, env: "prod",   network: "192.168.5" }
+    - { role: vms, env: "prod", vm_ram_size: "30000",  network: "192.168.5" }

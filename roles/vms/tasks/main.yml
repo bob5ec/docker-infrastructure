@@ -9,26 +9,23 @@
 
 - name: Create data disks for nonprod
   shell: dd if=/dev/zero "of={{ env }}-data.img" count=10000; \
-    mkfs.ext3 "{{ env }}-data.img"; \
-    dd if=/dev/zero "of={{ env }}-data2.img" count=10000; \
-    mkfs.ext4 "{{ env }}-data2.img"
+    mkfs.ext3 "{{ env }}-data.img"
   args:
     chdir: /var/lib/libvirt/images/
-    creates: "{{ env }}-data2.img"
-#TODO attach real disks
+    creates: "{{ env }}-data.img"
   when: env != "prod"
 
-- name: Link prod data disk
-  file:
-    src: /dev/mapper/data-niobe
-    dest: /var/lib/libvirt/images/prod-data.img
-    state: link
-  when: env == "prod"
+#- name: Link prod data disk
+#  file:
+#   src: /dev/mapper/data-niobe
+#   dest: /var/lib/libvirt/images/prod-data.img
+#   state: link
+#  when: env == "prod"
 
 - name: Link prod data2 disk
   file:
     src: /dev/mapper/data2-data2
-    dest: /var/lib/libvirt/images/prod-data2.img
+    dest: /var/lib/libvirt/images/prod-data.img
     state: link
   when: env == "prod"
 #
@@ -66,13 +63,12 @@
   shell: virt-install \
     --connect qemu:///system \
     --name "{{ env }}{{item}}" \
-    --ram 1024 --vcpus 1 \
+    --ram "{{ vm_ram_size }}" --vcpus "{{ vm_vcpus }}" \
     --os-type=linux \
     --os-variant=virtio26 \
     --rng /dev/urandom \
-    --disk "path={{ env }}{{item}}.qcow2,format=qcow2,size=8,bus=virtio" \
+    --disk "path={{ env }}{{item}}.qcow2,format=qcow2,size={{vm_disk_size}},bus=virtio" \
     --disk "path={{ env }}-data.img,format=raw,bus=virtio" \
-    --disk "path={{ env }}-data2.img,format=raw,bus=virtio" \
     --network "bridge={{ env }}" \
     --graphics none \
     --autostart \
