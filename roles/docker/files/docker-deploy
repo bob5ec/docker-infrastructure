@@ -34,9 +34,17 @@ CHANGED_REPO=0
 if [ "$1" == "-l" ]; then
 	#running docker-deploy local in the current directory
 	CHANGED_REPO=1
-	if [ ! -z "$ENV" ]; then
-		export ENV=`git rev-parse --abbrev-ref HEAD`
+	echo "ENV1: $ENV"
+	#reset $ENV, since the local hostname will not help
+       	export ENV=$TRAVIS_BRANCH
+	echo "ENV2: $ENV"
+
+	#set default ENV to dev
+	if [ -z "$ENV" ]; then
+        	export ENV=`git rev-parse --abbrev-ref HEAD`
+		echo "ENV3: $ENV"
 	fi
+
 else
 	cd
 	if [ ! -d "$target" ]; then
