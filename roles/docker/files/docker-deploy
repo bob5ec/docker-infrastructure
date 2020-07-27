@@ -9,9 +9,11 @@ if [ "$1" == "down" ]; then
 		cd
 		cd $target
 	fi
+
 	for compose in *.yml; do
 		#use every yml as compose file and project name
 		compose_base=`basename $compose .yml`
+		local_compose="" 
 		
 		if [ -f "$compose_base/secrets/compose" ]; then
 			source $compose_base/secrets/compose
@@ -20,7 +22,11 @@ if [ "$1" == "down" ]; then
 		if [ -n $3 ]; then
 			base="-f $3"
 		fi
-		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base down -v
+
+		if [ "$2" == "-l" ]; then
+			local_compose=$base/$compose_base.yml 
+		fi
+		/usr/local/bin/docker-compose $local_compose -f $compose -p $compose_base down -v
 	done
 	exit 0
 fi
@@ -85,16 +91,19 @@ for compose in *.yml; do
 	fi
 
 	BEFORE=`docker images`
-	if [ ! "$1" == "-l" ]; then
-		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base config
-		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base pull
+	local_compose="" 
+	if [ "$1" == "-l" ]; then
+		local_compose=$base/$compose_base.yml 
+		/usr/local/bin/docker-compose $local_compose -f $compose -p $compose_base config
+	else
+		/usr/local/bin/docker-compose -f $compose -p $compose_base pull
 	fi
 	AFTER=`docker images`
 
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
 		# TODO side effect: variables are present for all compose files althogh just defined for one
-		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base down -v
-		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base up -d
+		/usr/local/bin/docker-compose $local_compose -f $compose -p $compose_base down -v
+		/usr/local/bin/docker-compose $local_compose -f $compose -p $compose_base up -d
 	fi
 done
 #TODO improve secrets security, e.g. copy them into the container
