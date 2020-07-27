@@ -89,13 +89,13 @@ for compose in *.yml; do
 
 	BEFORE=`docker images`
 	if [ ! "$1" == "-l" ]; then
+		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base config
 		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base pull
 	fi
 	AFTER=`docker images`
 
 	if [ "$RUNNING_IMAGES" == "1" -o "$BEFORE" != "$AFTER" -o "$CHANGED_REPO" == "1" ]; then
 		# TODO side effect: variables are present for all compose files althogh just defined for one
-		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base config
 		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base down -v
 		/usr/local/bin/docker-compose $base/$compose_base.yml -f $compose -p $compose_base up -d
 	fi
