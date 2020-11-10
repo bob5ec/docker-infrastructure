@@ -14,7 +14,8 @@
   hosts: metal
   remote_user: root
   vars:
-    hdparm_devices:
+    - hdparm_manage_config: true
+    - hdparm_devices:
       - dev: /dev/sdb
         options:
           - "spindown_time = 120"
