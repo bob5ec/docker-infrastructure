@@ -65,10 +65,13 @@
         method: manual
         vlan:
           raw-device: enp0s31f6
+        #last interface to set up. After all call dhclient manual :-(
       - device: vlan5
         method: manual
         vlan:
           raw-device: enp0s31f6
+        up:
+        - dhclient prod
         #networks to attach VMs
       - device: dev
         method: manual
@@ -87,14 +90,10 @@
       - device: prod
         method: manual
         bridge:
-          ports: vlan5 zhost
+          ports: vlan5
           stp: off
           maxwait: 0
           fd: 0
-      - device: zhost
-        description: get ip address AFTER setting up all interfaces
-        auto: true
-        family: inet
 
 
 
