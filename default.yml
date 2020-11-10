@@ -15,7 +15,10 @@
   remote_user: root
   vars:
     hdparm_devices:
-      - dev: /dev/sda
+      - dev: /dev/sdb
+        options:
+          - "spindown_time = 120"
+      - dev: /dev/sdc
         options:
           - "spindown_time = 120"
 
