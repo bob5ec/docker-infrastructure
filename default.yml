@@ -55,9 +55,7 @@
       network_interfaces:
       - device: enp0s31f6
         description: physical NIC
-        auto: true
-        family: inet
-        #method: dhcp
+        method: manual
         #VLAN interfaces using physical NIC as trunk
       - device: vlan3
         method: manual
@@ -68,10 +66,7 @@
         vlan:
           raw-device: enp0s31f6
       - device: vlan5
-        description: physical NIC in prod
-        auto: true
-        family: inet
-        #method: dhcp
+        method: manual
         vlan:
           raw-device: enp0s31f6
         #networks to attach VMs
@@ -92,10 +87,14 @@
       - device: prod
         method: manual
         bridge:
-          ports: vlan5
+          ports: vlan5 zhost
           stp: off
           maxwait: 0
           fd: 0
+      - device: zhost
+        description: get ip address AFTER setting up all interfaces
+        auto: true
+        family: inet
 
 
 
