@@ -4,3 +4,4 @@
 #
 ---
  - src: dresden-weekly.network-interfaces
+ - src: geerlingguy.hdparm

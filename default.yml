@@ -10,6 +10,15 @@
   handlers:
     - include: roles/docker/handlers/main.yml
 
+- name: configure hdd spindown
+  hosts: metal
+  remote_user: root
+  vars:
+    hdparm_devices:
+      - dev: /dev/sda
+        options:
+          - "spindown_time = 120"
+
 - name: configure and deploy libvirt
   hosts: metal
   remote_user: root
@@ -59,11 +68,10 @@
         vlan:
           raw-device: enp0s31f6
       - device: vlan5
-        method: static
-        address: 192.168.5.2
-        # default gateway is provided by DHCP on enp0s31f6 interface
-        #        gateway: 192.168.5.1
-        netmask: 24
+        description: physical NIC in prod
+        auto: true
+        family: inet
+        #method: dhcp
         vlan:
           raw-device: enp0s31f6
         #networks to attach VMs
