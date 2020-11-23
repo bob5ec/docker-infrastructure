@@ -13,6 +13,8 @@
 - name: configure hdd spindown
   hosts: metal
   remote_user: root
+  roles:
+    - geerlingguy.hdparm
   vars:
     - hdparm_manage_config: true
     - hdparm_devices:
